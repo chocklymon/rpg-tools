@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Starfinder Statblocks</title>
+    <link href="https://fonts.googleapis.com/css?family=Michroma|Open+Sans:400,400i,700,700i|Special+Elite" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/starfinder-adventure-path.css"/>
+</head>
+<body ng-app="sfBestiary" ng-controller="main as vm">
+<div class="container-fluid">
+    <form ng-submit="vm.search(vm.searchTerm)" class="form-horizontal">
+        <div class="form-group">
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" title="Search" placeholder="Monster name..."
+                           ng-model="vm.searchTerm">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12" ng-show="vm.nearResults.length >= 2">
+                Did you mean:
+                <span ng-repeat="statblock in vm.nearResults">
+                    <button type="button" class="btn btn-default"
+                            ng-click="vm.statblock = statblock">{{statblock._type}}: {{statblock.name}}</button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <div ng-bind-html="vm.generateStatBlock(vm.statblock)"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="text-muted">
+                    Source: <span>{{vm.sources[vm.statblock._source].name}}</span>
+                </p>
+            </div>
+        </div>
+    </form>
+    <div class="row" ng-if="vm.lastErr">
+        <div class="col-xs-12">
+            <pre>{{vm.lastErr}}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="text-center text-muted small">&copy; 2017 Curtis Oakley</p>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js" type="application/javascript"></script>
+<script src="assets/js/levenshtein.js" type="application/javascript"></script>
+<script type="application/javascript">
+    'use strict';
+    angular.module('sfBestiary', ['co.levenshtein'])
+        .factory('modifier', [function() {
+            return function(input) {
+                if (input === null) {
+                    return '—';
+                } else if (input < 0) {
+                    return input;
+                } else {
+                    return '+' + input;
+                }
+            };
+        }])
+        .controller('main', ['$http', '$sce', 'levenshtein', 'modifier', function($http, $sce, levenshtein, modifier) {
+            var vm = this;
+            var sfData = [];
+            vm.size = {
+                'S': 'Small',
+                'M': 'Medium',
+                'L': 'Large',
+                'H': 'Huge'
+            };
+
+            // Get the bestiary
+            $http.get('source/starfinder-data.json')
+                .then(function(response) {
+                    sfData = response.data;
+                    vm.xpByCr = sfData.xpByCR;
+
+                    // Re-order the sources to be keyed by source
+                    vm.sources = {};
+                    angular.forEach(sfData.sources, function(source) {
+                        vm.sources[source.source] = source;
+                    });
+                })
+                .catch(function(err) {
+                    vm.lastErr = err;
+                });
+
+            function findStatblock(name) {
+                // The monster must have a levenshtein distance of less than seven from the name
+                var shortestDistance = 8;
+
+                var foundStatblocks = [];
+                var statblocks = sfData.statblocks;
+                var i, l, x, distance, statblockName;
+                name = name.toLowerCase();
+
+                // Go through all the monsters to find ones with a similar name
+                for (i = 0, l = statblocks.length; i < l; i++) {
+                    statblockName = statblocks[i].name.toLowerCase();
+                    if (statblockName === name) {
+                        // Exact match
+                        return [statblocks[i]];
+                    }
+                    if (statblockName.indexOf(name) !== -1) {
+                        // Name is a substring, place at the beginning
+                        foundStatblocks.unshift(statblocks[i]);
+                    } else {
+                        // Find the monsters with the closest levenshtein distance to the name
+                        distance = levenshtein(name, statblockName);
+                        if (distance < shortestDistance) {
+                            // Closer match found
+                            shortestDistance = distance;
+
+                            // Remove monsters that are further away from matching
+                            for (x = foundStatblocks.length - 1; x >= 0; x--) {
+                                if ('distance' in foundStatblocks[x]) {
+                                    foundStatblocks.splice(x, 1);
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            // Place this monster into the array
+                            foundStatblocks.push({'monster': statblocks[i], 'distance': distance});
+                        } else if (distance == shortestDistance) {
+                            foundStatblocks.push({'monster': statblocks[i], 'distance': distance});
+                        }
+                    }
+                }
+
+                // Fix monsters with distance
+                for (x = foundStatblocks.length - 1; x >= 0; x--) {
+                    if ('distance' in foundStatblocks[x]) {
+                        foundStatblocks.splice(x, 1, foundStatblocks[x].monster);
+                    } else {
+                        break;
+                    }
+                }
+
+                return foundStatblocks;
+            }
+
+            vm.search = function(name) {
+                // Find monsters with similar names
+                vm.nearResults = findStatblock(name);
+
+                // Select the first monster
+                vm.statblock = (vm.nearResults.length > 0) ? vm.nearResults[0] : null;
+            };
+
+            vm.generateStatBlock = function(statblock) {
+                /*
+                <div class="statblock" ng-class="{{vm.statblock._type}}" ng-show="vm.statblock">
+                    <div class="name">
+                        <h2>{{vm.statblock.name}} <span>CR {{vm.statblock.cr}}</span></h2>
+                    </div>
+                    <div class="stats">
+                        <p><strong>XP {{vm.xpByCr[vm.statblock.cr]}}</strong></p>
+                        <p ng-show="vm.statblock.tag">{{vm.statblock.tag}}</p>
+                        <p ng-show="vm.statblock._type == 'creature'">{{vm.statblock.alignment}} {{vm.size[vm.statblock.size]}} {{vm.statblock.type}} <span ng-show="vm.statblock.typeTag">({{vm.statblock.typeTag}})</span></p>
+                        <p ng-show="vm.statblock._type == 'creature'">
+                            <strong>Init</strong> {{vm.statblock.init | modifier}};
+                            <strong>Senses</strong> {{vm.statblock.senses}};
+                            <strong>Perception</strong> {{vm.statblock.perception | modifier}}
+                        </p>
+                        <div ng-show="vm.statblock._type == 'creature'">
+                            <h5>Defense <span><strong>HP</strong> {{vm.statblock.hp}}</span></h5>
+                            <p><strong>EAC</strong> {{vm.statblock.eac}}; <strong>KAC</strong> {{vm.statblock.kac}}</p>
+                            <p><strong>Fort</strong> {{vm.statblock.fort | modifier}}; <strong>Ref</strong> {{vm.statblock.ref | modifier}}; <strong>Will</strong> {{vm.statblock.will | modifier}}</p>
+                        </div>
+                    </div>
+                </div>
+                 */
+                function tagIf(attr, tag, prepend) {
+                    if (statblock[attr]) {
+                        return '<' + tag + '>' + prepend + statblock[attr] + '</' + tag + '>';
+                    } else {
+                        return '';
+                    }
+                }
+                function tagIfIn(attr, obj, tag, prepend) {
+                    if (statblock[attr] && statblock[attr] in obj) {
+                        return '<' + tag + '>' + prepend + obj[statblock[attr]] + '</' + tag + '>';
+                    } else {
+                        return '';
+                    }
+                }
+                function safeLabel(label, attr, isModifier) {
+                    var response = '',
+                        i, l = label.length;
+
+                    // Convert attr and isModifier to arrays if needed //
+                    // Take the lowercase version of the labels and use that as the attributes if we don't have any attributes
+                    if (!angular.isArray(attr)) {
+                        var newAttr = [];
+                        for (i = 0; i < l; i++) {
+                            newAttr[i] = label[i].toLowerCase();
+                        }
+                        attr = newAttr;
+                    }
+                    // If the isModifier isn't an array, create an array filled with the passed in isModifier
+                    if (!angular.isArray(isModifier)) {
+                        var newIsModifier = [];
+                        for (i = 0; i < l; i++) {
+                            newIsModifier[i] = isModifier;
+                        }
+                        isModifier = newIsModifier;
+                    }
+
+                    // Take all the attributes and labels and make a semi-colon separated list of them
+                    var list = [];
+                    for (i = 0; i < l; i++) {
+                        if (attr[i] in statblock) {
+                            list.push('<strong>' + label[i] + '</strong> ' + (isModifier[i] ? modifier(statblock[attr[i]]) : statblock[attr[i]]));
+                        }
+                    }
+                    if (list.length > 0) {
+                        response = '<p>' + list.join('; ') + '</p>';
+                    }
+
+                    return response;
+                }
+                function safeJoin(label, attr, separator) {
+                    attr = (attr ? attr : label.toLowerCase());
+                    separator = separator || ', ';
+
+                    var response = '';
+                    if (statblock[attr]) {
+                        response = '<p><strong>' + label + '</strong> ' + joinIfArray(statblock[attr], separator) + '</p>';
+                    }
+                    return response;
+                }
+                function joinIfArray(arr, separator) {
+                    if (angular.isArray(arr)) {
+                        return arr.join(separator);
+                    } else {
+                        return arr;
+                    }
+                }
+                function properCase(str) {
+                    return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+                }
+
+                var html = '';
+                if (statblock && '_type' in statblock) {
+                    // Build the basic header
+                    html =
+                        '<div class="statblock ' + statblock._type + '">' +
+                            '<div class="name">' +
+                                '<h2>' + statblock.name + tagIf('cr', 'span', 'CR ') + '</h2>' +
+                            '</div>' +
+                            '<div class="stats">' +
+                                tagIfIn('cr', vm.xpByCr, 'p', '<strong>XP</strong> ') +
+                                tagIf('tag', 'p', '');
+
+                    // Build the statblock for the given type
+                    if (statblock._type === 'creature') {
+                        // Add the basic information (alignment, initiative, etc)
+                        html += '<p>';
+                        if (statblock.alignment) {
+                            html += statblock.alignment + ' ';
+                        }
+                        if (statblock.size) {
+                            if (statblock.size in vm.size) {
+                                html += vm.size[statblock.size] + ' '
+                            } else {
+                                html += statblock.size + ' ';
+                            }
+                        }
+                        if (statblock.type) {
+                            html += statblock.type + ' ';
+                        }
+                        if (statblock.typeTag) {
+                            html += '(' + statblock.typeTag + ')';
+                        }
+                        html += '</p>';
+
+                        html += safeLabel(['Init', 'Senses', 'Perception'], null, [true, false, true])
+                              + safeLabel(['Aura']);
+
+                        // Add the Defense section
+                        html += '<div><h5>Defense ' + tagIf('rp', 'span', '<strong style="padding-left:15px">RP</strong> ') + tagIf('hp', 'span', '<strong>HP</strong> ') + '</h5>' +
+                                safeLabel(['EAC', 'KAC']) +
+                                safeLabel(['Fort', 'Ref', 'Will'], null, true) +
+                                safeLabel(['Defensive Abilities', 'DR', 'Immunities', 'Resistances'], ['defensiveAbilities', 'dr', 'immunities', 'resistances']) +
+                                safeLabel(['Weaknesses']) +
+                            '</div>';
+
+                        // Add the Offense section
+                        html += '<div><h5>Offense</h5>' +
+                                safeLabel(['Speed']);
+
+                        // Build the list of attacks grouped by type
+                        var offense = {};
+                        angular.forEach(statblock.attacks, function(attack) {
+                            if (!offense[attack.type]) {
+                                offense[attack.type] = [];
+                            }
+                            offense[attack.type].push(attack.name + ' ' + attack.bonus + ' (' + attack.damage + ')');
+                        });
+                        angular.forEach(offense, function(attacks, type) {
+                            html += '<p><strong>' + properCase(type) + '</strong> ' + attacks.join(' or ') + '</p>';
+                        });
+
+                        html += safeLabel(['Space', 'Reach'])
+                              + safeLabel(['Offensive Abilities'], ['offensiveAbilities']);
+                        if (statblock.spellClass || statblock.spellAbility) {
+                            // Add spells
+                            html += '<p><strong>';
+                            if (statblock.spellClass) {
+                                html += statblock.spellClass + ' spells known</strong>';
+                            } else {
+                                html += statblock.spellAbility + ' Spell-Like Abilities</strong>';
+                            }
+                            if (statblock.spellCL) {
+                                html += ' (' + statblock.spellCL + ')';
+                            }
+                            html += '</p>';
+                            if (statblock.spells) {
+                                html += '<ul class="ability-list"><li>' + joinIfArray(statblock.spells, '</li><li>') + '</li></ul>'
+                            }
+                        }
+
+                        html += '</div>';
+
+                        // Add the statistics section
+                        html += '<div><h5>Statistics</h5>' +
+                            safeLabel(['Str', 'Dex', 'Con', 'Int', 'Wis', 'Cha'], null, true);
+
+                        if (statblock.skills) {
+                            var list = [];
+                            angular.forEach(statblock.skills, function(bonus, skill) {
+                                list.push(skill + ' ' + modifier(bonus));
+                            });
+                            html += '<p><strong>Skills</strong> ' + list.join(', ') + '</p>';
+                        }
+                        if (statblock.feat) {
+                            html += '<p><strong>Feat</strong> ' + joinIfArray(statblock.feat, ', ') + '</p>';
+                        }
+                        html +=
+                            safeJoin('Languages') +
+                            safeLabel(['Other Abilities'], ['abilities']) +
+                            safeJoin('Gear');
+                        html += '</div>';
+
+                        // Add the ecology section
+                        if (statblock.environment || statblock.organization) {
+                            html += '<div><h5>Ecology</h5>' +
+                                safeLabel(['Environment']) +
+                                safeJoin('Organization') + '</div>';
+                        }
+
+                        // Add the special abilities section (if applicable)
+                        if (statblock.specialAbilities) {
+                            html += '<div><h5>Special Abilities</h5>';
+                            angular.forEach(statblock.specialAbilities, function(ability) {
+                                html += '<p><strong>' + ability.name + ' (' + properCase(ability.type) + ')</strong> ' +
+                                    joinIfArray(ability.text, '</p><p>') + '</p>';
+                            });
+                            html += '</div>';
+                        }
+
+                        html += '</div>';
+
+                        // Add the description
+                        if (statblock.description) {
+                            html += '<div class="description"><p>';
+                            if (angular.isArray(statblock.description)) {
+                                html += statblock.description.join('</p><p>');
+                            } else {
+                                html += statblock.description;
+                            }
+                            html += '</p></div>';
+                        }
+                    } else if (statblock._type === 'trap') {
+                        // Add trap stats
+                        html += safeLabel(['Type', 'Perception', 'Disable']) +
+                                safeLabel(['Trigger', 'Reset']) +
+                                safeLabel(['Effect']) + '</div>';
+                    } else if (statblock._type === 'affliction') {
+                        // Add affliction stats
+                        html += safeLabel(['Type', 'Save']) +
+                                safeLabel(['Track', 'Frequency']) +
+                                safeLabel(['Effect']) +
+                                safeLabel(['Cure']) + '</div>';
+                    } else if (statblock._type === 'starship') {
+                        // TODO starship statblock
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                }
+
+                return $sce.trustAsHtml(html);
+            }
+        }]);
+</script>
+</body>
+</html>

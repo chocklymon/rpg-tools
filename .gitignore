@@ -1,0 +1,13 @@
+# IDE/Editor Generated Files
+.idea/
+
+# Copyrighted and Source Files
+source/
+
+# Misc
+*~
+*.log
+*.zip
+*.tgz
+*.tar
+*.gz

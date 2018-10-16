@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="monsters">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monster Stat Block</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="assets/css/dnd5e-phb.css"/>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/dnd5e-phb-fonts.css"/>
+</head>
+<body>
+<div data-ng-view=""></div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js" type="application/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-route.js" type="application/javascript"></script>
+<script src="assets/js/levenshtein.js" type="application/javascript"></script>
+<script src="assets/js/dnd5e-monsters.js" type="application/javascript"></script>
+<script type="application/javascript">
+    'use strict';
+    angular.module('monsters', ['ngRoute', 'co.levenshtein', 'co.5e.monsters'])
+        .controller('main', ['$http', '$sce', 'bestiary', 'levenshtein', function($http, $sce, bestiary, levenshtein) {
+            var vm = this;
+            var monsterNames = [];
+
+            // Get the bestiary
+            $http.get('source/dnd-5e-creatures.json')
+                .then(function(response) {
+                    bestiary.add(response.data);
+                    angular.forEach(response.data, function(monster) {
+                        monsterNames.push(monster.name.toLowerCase());
+                    });
+                })
+                .catch(function(err) {
+                    vm.lastErr = err;
+                });
+
+            function selectMonster(name) {
+                var monster = bestiary.getMonster(name);
+                if (monster) {
+                    vm.monster = {
+                        html: $sce.trustAsHtml(bestiary.buildTemplate(monster)),
+                        markdown: bestiary.buildMarkdown(monster),
+                        json: monster,
+                        source: monster.source
+                    }
+                }
+            }
+
+            function findMonsters(name) {
+                // The monster must have a levenshtein distance of less than seven from the name
+                var shortestDistance = 8;
+
+                var monsters = [];
+                var i, l, x, distance;
+                name = name.toLowerCase();
+
+                // Go through all the monsters to find ones with a similar name
+                for (i = 0, l = monsterNames.length; i < l; i++) {
+                    if (monsterNames[i] === name) {
+                        // Exact match
+                        return [monsterNames[i]];
+                    }
+                    if (monsterNames[i].indexOf(name) !== -1) {
+                        // Name is a substring, place at the beginning
+                        monsters.unshift(monsterNames[i]);
+                    } else {
+                        // Find the monsters with the closest levenshtein distance to the name
+                        distance = levenshtein(name, monsterNames[i]);
+                        if (distance < shortestDistance) {
+                            // Closer match found
+                            shortestDistance = distance;
+
+                            // Remove monsters that are further away from matching
+                            for (x = monsters.length - 1; x >= 0; x--) {
+                                if (typeof monsters[x] === 'object') {
+                                    monsters.splice(x, 1);
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            // Place this monster into the array
+                            monsters.push({'monster': monsterNames[i], 'distance': distance});
+                        } else if (distance == shortestDistance) {
+                            monsters.push({'monster': monsterNames[i], 'distance': distance});
+                        }
+                    }
+                }
+
+                // Fix monsters with distance
+                for (x = monsters.length - 1; x >= 0; x--) {
+                    if (typeof monsters[x] === 'object') {
+                        monsters.splice(x, 1, monsters[x].monster);
+                    } else {
+                        break;
+                    }
+                }
+
+                return monsters;
+            }
+
+            vm.search = function(name) {
+                // Find monsters with similar names
+                vm.monsters = findMonsters(name);
+
+                // Select the first monster
+                selectMonster(vm.monsters.length > 0 ? vm.monsters[0] : null);
+            };
+            vm.selectMonster = selectMonster;
+        }])
+        .controller('statblock', ['$http', '$routeParams', '$sce', 'bestiary', function($http, $routeParams, $sce, bestiary) {
+            var vm = this;
+
+            function setMonster() {
+                var monster = bestiary.getMonster($routeParams.monsterName);
+
+                if (monster) {
+                    vm.monster = $sce.trustAsHtml(bestiary.buildTemplate(monster));
+                    return true;
+                } else {
+                    vm.monster = $sce.trustAsHtml('<p>Not Found</p>');
+                    return false;
+                }
+            }
+
+
+            if (!setMonster()) {
+                // TODO combine so the monsters are loaded for both modules
+                $http.get('source/dnd-5e-creatures.json')
+                    .then(function(response) {
+                        bestiary.add(response.data);
+                        setMonster();
+                    })
+                    .catch(function(err) {
+                        vm.monster = '<p>HTTP Error</p>';
+                    });
+            }
+        }])
+        .config(['$routeProvider', function($routeProvider) {
+            $routeProvider
+                .when('/monster/:monsterName', {
+                    templateUrl: 'statblock.html',
+                    controller: 'statblock',
+                    controllerAs: '$ctrl'
+                })
+                .when('/', {
+                    templateUrl: 'search.html',
+                    controller: 'main',
+                    controllerAs: 'vm'
+                })
+                .otherwise('/');
+        }]);
+</script>
+<script type="text/ng-template" id="search.html">
+    <div class="container-fluid">
+        <form ng-submit="vm.search(vm.searchTerm)" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <input type="text" class="form-control" title="Search" placeholder="Monster name..."
+                               ng-model="vm.searchTerm">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12" ng-show="vm.monsters.length >= 2">
+                    Did you mean:
+                    <span ng-repeat="monster in vm.monsters">
+                    <button type="button" class="btn btn-default"
+                            ng-click="vm.selectMonster(monster)">{{monster}}</button>
+                </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <h4>Statblock</h4>
+                        </div>
+                        <div class="col-xs-2" ng-show="vm.monster">
+                            <a ng-href="#!/monster/{{vm.monster.json.name}}" title="View" target="_blank">
+                                <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div ng-bind-html="vm.monster.html"></div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <h4>Markdown</h4>
+                        </div>
+                    </div>
+                    <textarea rows="20" title="The Monster Markdown Block" class="form-control">{{vm.monster.markdown}}</textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p class="text-muted">
+                        Source: {{vm.monster.source}}
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-10">
+                            <h4>Json</h4>
+                        </div>
+                        <div class="col-xs-12 col-sm-2 text-right">
+                            <button type="button" class="btn btn-default" ng-click="vm.showJSON = !vm.showJSON">{{vm.showJSON ? 'Hide' : 'Show'}}</button>
+                        </div>
+                    </div>
+                    <pre ng-show="vm.showJSON">{{vm.monster.json | json}}</pre>
+                </div>
+            </div>
+        </form>
+        <div class="row" ng-if="vm.lastErr">
+            <div class="col-xs-12">
+                <pre>{{vm.lastErr}}</pre>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="text-center text-muted small">&copy; 2017 Curtis Oakley</p>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="statblock.html">
+    <div ng-bind-html="$ctrl.monster"></div>
+</script>
+</body>
+</html>

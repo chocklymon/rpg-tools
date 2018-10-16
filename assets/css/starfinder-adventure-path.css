@@ -1,0 +1,167 @@
+/* - General - */
+body {
+    font-family: 'Open Sans', eurostile, Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #90591d;
+    font-family: 'Michroma', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    width: 482px;
+    height: 183px;
+    margin: 5px 0 5px;
+    padding: 80px 84px 20px 64px;
+    background-image: url("../images/starfinder/Adventure-Path-Section-Background.png");
+
+    color: #f8ac1a;
+    font-family: 'Special Elite', Helvetica, Arial, sans-serif ;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0 rgba(140,140,140,0.6) , -1px -1px 1px rgba(0,0,0,0.67) ;
+    text-overflow: clip;
+}
+
+p+p, .descriptive+p, .statblock+p, .sidebar+p, table+p {
+    text-indent: 15px;
+}
+
+.descriptive {
+    border-top: 1px solid #7e4500;
+    border-bottom: 1px solid #7e4500;
+    padding-top: 10px;
+    margin-bottom: 10px;
+    color: #652C00;
+}
+
+.cover-page, .cover {
+    text-align: center;
+}
+.signature {
+    text-align: right;
+}
+
+/* Sidebars */
+.sidebar {
+    position: relative;
+    float: right;
+    max-width: 437px;
+    padding: 55px 10px;
+    margin: 2px 10px;
+    background-image: url("../images/starfinder/Sidebar-Background.jpg");
+    background-size: 100%;
+}
+.sidebar, .sidebar h2, .sidebar h4 {
+    color: #ffffff;
+}
+.sidebar::before {
+    content: "";
+    width: 437px;
+    height: 55px;
+    background-image: url("../images/starfinder/Sidebar-Border.png");
+    background-size: 100% 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.sidebar::after {
+    content: "";
+    width: 437px;
+    height: 55px;
+    background-image: url("../images/starfinder/Sidebar-Border.png");
+    background-size: 100% 100%;
+
+    transform: translateY(-50%) rotate(180deg);
+    position: absolute;
+    bottom: -29px;
+    left: 0;
+}
+.sidebar h2, .sidebar h4 {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* Outline page */
+.outline {
+    text-align: left
+}
+.outline .overview-container {
+    margin-left: 5%;
+}
+
+/* Cover page */
+.cover-page .logo {
+    /* Replace the logo text with the starfinder image */
+    background-image: url("../images/starfinder/Starfinder-Logo.png");
+    width: 816px;
+    height: 139px;
+    display: block;
+    margin: 10px auto;
+    padding: 0;
+
+    /* Hide the text */
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+/* - Stat Blocks - */
+/* Possible statblock flags: .creature .trap .starship .statblock-full */
+.statblock {
+    padding-bottom: 20px;
+    max-width: 600px;
+}
+.statblock-full {
+    max-width: 100%;
+}
+.statblock-full .name h1, .statblock-full .name p {
+    width: 49%;
+    display: inline-block;
+}
+.statblock-full h1 {
+    background: none;
+    color: #333333;
+    font-family: 'Michroma', Helvetica, Arial, sans-serif;
+    padding: 10px;
+    margin: 10px 0;
+    height: auto;
+}
+
+.statblock p {
+    margin: 0 0 0 15px;
+    text-indent: -15px;
+}
+.statblock .description p {
+    margin: 0;
+    text-indent: 0;
+}
+.statblock .description p+p {
+    text-indent: 15px;
+}
+
+.statblock .name, .statblock h2, .statblock h5 {
+    text-transform: uppercase;
+}
+.statblock h2, .statblock h5 {
+    font-size: 16px;
+    margin: 0;
+}
+.statblock h2 {
+    background: #000000;
+    color: #ffffff;
+    padding: 2px 5px;
+}
+.statblock h5 {
+    color: #333333;
+    margin-top: 10px;
+    border-bottom: 1px solid #000000;
+}
+.statblock h2 span, .statblock h5 span {
+    float: right;
+}
+.statblock h5 span {
+    font-weight: normal;
+}
