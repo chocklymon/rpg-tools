@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgotten Realms Calendar Tool</title>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css"
+          type="text/css" rel="stylesheet"/>
+    <link href="calendar.css" type="text/css" rel="stylesheet"/>
+    <script type="application/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script type="application/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+    <script src="calendar.js" type="application/javascript"></script>
+</head>
+<body>
+<div class="container">
+    <form method="post" action="" name="form1" class="form-horizontal">
+        <div class="row header-row">
+            <div class="col-xs-12">
+                <h1>Forgotten Realms Calendar Tool</h1>
+            </div>
+        </div>
+        <div class="row content-row">
+            <div class="col-xs-12">
+                <div class="row nav-row">
+                    <table class="hidden-table col-xs-12">
+                        <thead>
+                        <tr>
+                            <th colspan="6"><label for="selectMonth" class="label">Month</label></th>
+                            <th></th>
+                            <th colspan="6"><label for="selectYear" class="label">Year</label></th>
+                            <th></th>
+                            <th colspan="6"><span class="label">Moon Phases</span></th>
+                            <th></th>
+                            <th colspan="6"><span class="label">Notes</span></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="3" class="text-right">
+                                <button type="button" class="btn btn-link" title="Go back one month"
+                                        onclick="frc.goToPrevMonth()"><img src="images/reverse.jpg" width="18" height="18" alt="Month Back"></button>
+                            </td>
+                            <td colspan="3" class="text-left">
+                                <button type="button" class="btn btn-link" title="Go forward one month"
+                                        onclick="frc.goToNextMonth()"><img src="images/foreward.jpg" width="18" height="18" alt="Month Forward"></button>
+                            </td>
+                            <td></td>
+                            <td colspan="3" class="text-right">
+                                <button type="button" class="btn btn-link" title="Go back one year"
+                                        onclick="frc.goToPrevYear()"><img src="images/reverse.jpg" width="18" height="18" alt="Year Back"></button>
+                            </td>
+                            <td colspan="3" class="text-left">
+                                <button type="button" class="btn btn-link" title="Go forward one year"
+                                        onclick="frc.goToNextYear()"><img src="images/foreward.jpg" width="18" height="18" alt="Year Forward"></button>
+                            </td>
+                            <td></td>
+                            <td colspan="3" class="text-right">
+                                <button type="button" class="btn btn-link" title="Show moon phases"
+                                        onclick="frc.showMoonPhases()"><img src="images/moons.jpg" width="18" height="18" alt="Moon Phases"></button>
+                            </td>
+                            <td colspan="3" class="text-left">
+                                <button type="button" class="btn btn-link" title="Show moon phase information"
+                                        onclick="frc.showMoonPhaseInfo()"><img src="images/moons2.jpg" width="18" height="18" alt="Moon Phases Info"></button>
+                            </td>
+                            <td></td>
+                            <td colspan="2" class="text-center">
+                                <button type="button" class="btn btn-link" title="Show all historic notes"
+                                        onclick="frc.showHistoric()"><img src="images/H.jpg" width="12" height="17" alt="Historical Notes"></button>
+                            </td>
+                            <td colspan="2" class="text-center">
+                                <button type="button" class="btn btn-link" title="Show all personal notes"
+                                        onclick="frc.showPersonal()"><img src="images/P.jpg" width="12" height="17" alt="Personal Notes"></button>
+                            </td>
+                            <td colspan="2" class="text-center">
+                                <button type="button" class="btn btn-link" title="Show the Roll of Years"
+                                        onclick="frc.showYears()"><img src="images/Y.jpg" width="12" height="17" alt="Roll of Years"></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <select class="form-control" id="selectMonth" name="selectMonth">
+                                    <option value="0">1. Hammer </option>
+                                    <option value="1">2. Alturiak</option>
+                                    <option value="2">3. Ches</option>
+                                    <option value="3">4. Tarsakh</option>
+                                    <option value="4">5. Mirtul</option>
+                                    <option value="5">6. Kythorn</option>
+                                    <option value="6">7. Flamerule</option>
+                                    <option value="7">8. Eleasis</option>
+                                    <option value="8">9. Eleint</option>
+                                    <option value="9">10. Marpenoth</option>
+                                    <option value="10">11. Uktar</option>
+                                    <option value="11">12. Nightal</option>
+                                </select>
+                            </td>
+                            <td></td>
+                            <td colspan="6">
+                                <input type="text" class="form-control"
+                                       id="selectYear" name="selectYear" size="4" maxlength="7"/>
+                            </td>
+                            <td colspan="14" class="vertical-spacer">
+                                <button type="submit" class="not-visible" title="Accept" id="quickSelect">Accept</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row calendar-row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>
+                                    <span id="display-month-title"></span>
+                                    <span id="month-note" class="icon note-icon" title=""></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3>
+                                    <span id="display-year-name"></span>
+                                    <span id="year-note" class="icon note-icon" title=""></span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" id="month"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" id="holidays"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row notes-row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12" id="historical-notes"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12" id="personal-notes"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row footer-row">
+            <div class="col-xs-12">
+                <p>© 2005 Wizards of the Coast, Inc., a subsidiary of Hasbro, Inc. All Rights Reserved.</p>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="dialog-moon-phases-help" title="Phases of Selûne">
+    <table class="table table-padded valign-middle">
+        <tr>
+            <td><img src="images/moons/moon_x5.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Full Moon</b> - Selûne's illuminated side is facing Toril. Selûne
+                appears to be completely illuminated by direct sunlight.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x6.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Waning Gibbous</b> - Selûne appears to be more than one-half but not fully illuminated
+                by direct sunlight. The fraction of Selûne's disk that is illuminated
+                is decreasing.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x7.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Last Quarter</b> - One-half of Selûne appears to be illuminated by direct sunlight.
+                The fraction of Selûne's disk that is illuminated is decreasing.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x8.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Waning Crescent</b> - Selûne appears to be partly but less than one-half illuminated by
+                direct sunlight. The fraction of Selûne 's disk that is illuminated
+                is decreasing.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x1.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>New Moon</b> - Selûne's unilluminated side is facing Toril. Selûne is not
+                visible (except during a solar eclipse).</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x2.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Waxing Crescent</b> - Selûne appears to be partly but less than one-half illuminated by
+                direct sunlight. The fraction of the Selûne 's disk that is illuminated
+                is increasing.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x3.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>First Quarter</b> - One-half of Selûne appears to be illuminated by direct sunlight.
+                The fraction of Selûne 's disk that is illuminated is increasing.</td>
+        </tr>
+        <tr>
+            <td><img src="images/moons/moon_x4.jpg" width="63" height="64"></td>
+            <td class="text-left"><b>Waxing Gibbous</b> - Selûne appears to be more than one-half but not fully
+                illuminated by direct sunlight. The fraction of Selûne 's disk that
+                is illuminated is increasing.</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -1,6 +1,9 @@
 # IDE/Editor Generated Files
 .idea/
 
+# Configuration
+frc/notes.json
+
 # Copyrighted and Source Files
 source/
 

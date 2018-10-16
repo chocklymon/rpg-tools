@@ -1,0 +1,71 @@
+{
+  "historical":{
+    "1372": {
+      "_1": [
+        "By the midpoint of the year, several events have signaled a shift in the balance of power for all of Faerûn.",
+        "<a href=\"http://forgottenrealms.wikia.com/wiki/1372_DR\" target=\"_blank\">Forgotten Realms Wiki</a>"
+      ]
+    },
+    "1385": {
+      "3": {
+        "29": "The Spellplague strikes Realmspace and even the planes themselves."
+      }
+    },
+    "_months": {
+      "0": {
+        "31": [
+          "<strong>Midwinter</strong> (also known as <strong>Deadwinter Day</strong> by the common people) is a festival to mark the midpoint of winter."
+        ]
+      },
+      "3": {
+        "31": [
+          "<strong>Greengrass</strong> is a festival to welcome in the first day of spring."
+        ]
+      },
+      "5": {
+        "1": [
+          "<strong>Trolltide</strong> is a lesser Waterdhavian feast day celebrated mostly by children. It commemorates the end of the Second Trollwar."
+        ]
+      },
+      "6": {
+        "30": "<strong>Midsummer's Eve:</strong> The grandest of the many festivals of the goddess Sharess, known collectively as the Endless Revels of Life, is a time of rejoicing and pursuit of pleasure.",
+        "31": [
+          "<strong>Midsummer</strong> is a festival that celebrated love and music through feast."
+        ],
+        "32": [
+          "<strong>Shieldmeet</strong> is the equivalent of a leap year day in the Calendar of Harptos, occurring once every four years, adding a day after the festival of Midsummer."
+        ]
+      },
+      "7": {
+        "1": [
+          "<strong>Highsummer</strong> is a festival day for several cultures."
+        ]
+      },
+      "8": {
+        "21": [
+          "<strong>Runemeet</strong> is a holy day of Uthgar, held on the autumn equinox when the Uthgardt tribes traveled to their respective ancestor mounts (or to Beorunna's Well, the holiest of all) for rites, pacts, and communing with ancestors.",
+          "This day was when juveniles who sought recognition as full tribe members proved themselves by hunting their tribes' ritual enemies."
+        ],
+        "31": [
+          "<strong>Highharvestide</strong> is traditionally a feast to celebrate the harvest and the abundance of food, but also the time when those wishing to travel left on their journeys before winter set in."
+        ]
+      },
+      "10": {
+        "31": [
+          "<strong>The Feast of the Moon</strong>, or <strong>Moonfest</strong>, is an annual festival, and the last great festival of the calendar year.",
+          "This day traditionally marks the onset of winter. It is also a time to celebrate and honor the ancestors and the respected dead.",
+          "See: <a href=\"http://forgottenrealms.wikia.com/wiki/Feast_of_the_Moon\" target=\"_blank\">Feast of the Moon - Forgotten Realms Wiki</a>"
+        ]
+      }
+    },
+    "_1429": ["Dagult Neverember is born sometime in 1429 DR."],
+    "_1467": ["In 1467 DR Dagult Neverember begins rebuilding Neverwinter and becomes the Lord Protector"]
+  },
+  "personal": {
+    "1491": {
+      "5": {
+        "21": "Elemental Evil Session 1 Started"
+      }
+    }
+  }
+}

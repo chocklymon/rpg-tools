@@ -1,0 +1,287 @@
+/* -- General -- */
+/* Resets */
+div, body, h1, h2, h3, h4, h5, html, p, table {
+    padding: 0;
+    margin: 0;
+}
+
+/* Tags */
+body {
+    background: #ffffff url("images/realms_bg_1.jpg");
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+}
+body.pop-up {
+    background: #ffffff;
+    font-size: 14px;
+}
+
+a, .btn-link {
+    color: #0000ff;
+}
+a:visited, .btn-link {
+    color: #800080;
+}
+
+h1, h2, h3, h4, h5 {
+    text-align: center;
+}
+
+img {
+    border: none;
+}
+
+input, select, textarea {
+    background-color: #ffffff;
+    border: black 1px solid;
+    color: black;
+    font-family: arial, verdana, sans-serif;
+    font-size: 12px;
+}
+
+input {
+    font-weight: bold;
+    text-align: center;
+}
+
+label, .label {
+    font-weight: bold;
+    font-size: 10px;
+}
+
+select, textarea {
+    font-weight: normal
+}
+
+p {
+    margin-bottom: 6px;
+}
+
+/* General Classes */
+.text-left {
+    text-align: left;
+}
+.text-center {
+    text-align: center;
+}
+.text-right {
+    text-align: right;
+}
+
+/* Lists */
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    cursor: pointer;
+    font: inherit;
+    text-transform: none;
+    border: 1px solid transparent;
+}
+.btn-link {
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    font-weight: 400;
+
+    padding: 0;
+    margin: 0;
+}
+
+
+/* - Sections/Layout - */
+.container {
+    width: 800px;
+    min-height: 470px;
+    margin: 10px auto;
+}
+
+/* Header/Footer */
+.header-row, .footer-row {
+    background: url("images/wood_bg.jpg");
+    border: 1px solid black;
+    color: #ffffcc;
+    text-align: center;
+    height: 20px;
+}
+
+.header-row:after, .footer-row:before {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: #EABB78;
+    border: 1px solid black;
+    display: block;
+    position: relative;
+    right: 1px;
+}
+.header-row:after {
+    bottom: -1px;
+}
+.footer-row:before {
+    top: -1px;
+}
+
+.header-row h1 {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.footer-row {
+    font-size: 10px;
+    background-position: bottom;
+}
+
+/* Content */
+.content-row {
+    background: #ffffff;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    min-height: 480px;
+}
+
+/* Navigation */
+.moon-phases thead, .nav-row {
+    background: #FFFFCC;
+}
+.nav-row {
+    border-bottom: 1px solid #F2F2F2;
+}
+.nav-row table {
+    margin: 0 auto;
+    max-width: 500px;
+}
+
+
+/* - Tables - */
+/* General */
+table, thead, tbody, tfoot, tr, td, th {
+    padding: 0;
+    margin: 0;
+}
+table {
+    border-collapse: collapse;
+    border: none;
+    width: 100%;
+}
+td {
+    text-align: center;
+    vertical-align: top;
+}
+
+td.vertical-spacer {
+    height: 18px;
+}
+
+.valign-middle td {
+    vertical-align: middle;
+}
+
+.table-padded td {
+    padding: 4px;
+}
+
+
+/* -- Calendar -- */
+.calendar-month, .moon-phases {
+    border-spacing: 2px;
+    border-collapse: separate;
+    background-color: #999999;
+    font-size: 13px;
+}
+.calendar-month td, .moon-phases td {
+    background-color: #ffffff;
+}
+.calendar-month td {
+    padding: 2px;
+    height: 70px;
+    text-align: right;
+}
+.calendar-month .highlight {
+    background-color: #dadada;
+}
+
+.calendar-row {
+    margin: 0 5px;
+}
+
+.calendar-day-info {
+    display: block;
+}
+.calendar-day-info span {
+    display: inline-block;
+    vertical-align: middle;
+    height: 18px;
+    line-height: 18px;
+}
+
+.calendar-extra-day td {
+    height: 60px;
+}
+
+.calendar-extra-day-name {
+    text-align: center;
+    margin-top: -16px;
+}
+
+.holiday-row {
+    padding-top: 15px;
+}
+.holiday-row.type-extra {
+    height: 35px;
+    border: 2px solid #999999;
+    border-top: none;
+}
+.holiday-row p {
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+.holiday-row .calendar-day-info {
+    float: right;
+    position: relative;
+    top: -13px;
+}
+
+.moon-phases {
+    background-color: #dadada;
+    line-height: 9px;
+}
+.moon-phases th {
+    line-height: 16px;
+}
+.moon-phases td {
+    padding: 1px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+
+/* -- Misc -- */
+.icon {
+    display: inline-block;
+    position: relative;
+    height: 18px;
+    width: 18px;
+    top: 2px;
+
+    visibility: hidden;
+}
+.icon.note-icon {
+    background-image: url("images/document-icon.png");
+}
+.icon.visible {
+    visibility: visible;
+}
+
+.not-visible {
+    visibility: hidden;
+}
+
+.dialog-no-pad .ui-dialog-content {
+    padding: 2px;
+}
