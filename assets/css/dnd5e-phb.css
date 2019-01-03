@@ -32,6 +32,10 @@
     position: absolute;
 }
 
+.lookup {
+    cursor: pointer;
+}
+
 /* - Misc - */
 .center-text {
     text-align: center;

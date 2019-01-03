@@ -464,9 +464,28 @@ if (!window) {
                 if (name === 'wolves') {
                     return 'wolf';
                 }
+                if (name === 'werewolves') {
+                    return 'werewolf';
+                }
 
-                // Default case, just drop the 's'
-                name = name.substring(0, name.length - 1);
+                // Attempt to de-pluralize
+                if (name.length > 3 && name.substring(name.length - 3) === 'ies') {
+                    // ies to y
+                    name = name.substring(0, name.length - 3) + 'y';
+                } else {
+                    // Default case, just drop the 's'
+                    name = name.substring(0, name.length - 1);
+                }
+
+                if (name in monsters) {
+                    return name;
+                }
+            }
+
+            // Other special cases
+            // Fungi to fungus
+            if (name.indexOf('fungi') >= 0) {
+                name = name.replace('fungi', 'fungus');
                 if (name in monsters) {
                     return name;
                 }
@@ -554,11 +573,14 @@ if (!window) {
     if ('angular' in window) {
         // Register as an angular module
         angular.module('co.5e.monsters', []).factory('bestiary', [Monsters]);
-    } else if (module !== undefined) {
-        module.exports = Monsters();
     } else {
-        // Attach to the window
-        window.bestiary5e = Monsters();
+        try {
+            // Register as a node module
+            module.exports = Monsters();
+        } catch (err) {
+            // Attach to the window
+            window.bestiary5e = Monsters();
+        }
     }
 })((function() {
     // Return a forEach function that provides the iterator function with key, value

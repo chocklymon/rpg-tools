@@ -8,13 +8,10 @@
                 var $el;
 
                 monsters.add(bestiary);
-                $('strong').each(function(i, el) {
-                    $el = $(el);
-                    if (monsters.getName($el.text())) {
-                        $el
-                            .on('click', pinMonster)
-                            .hover(openMonsterDisplay, closeMonsterDisplay);
-                    }
+                $('[data-lookup]').each(function(i, el) {
+                    $(el).addClass('lookup')
+                        .on('click', pinMonster)
+                        .hover(openMonsterDisplay, closeMonsterDisplay);
                 });
                 console.log('Monsters initialized');
             })
@@ -48,7 +45,7 @@
         }
 
         // Build the template
-        var monsterTemplate = monsters.buildTemplateFor($el.text(), true);
+        var monsterTemplate = monsters.buildTemplateFor($el.data('lookup'), true);
 
         // Attach the template the monster display box and set to visible
         $('#monsterDisplay').html(monsterTemplate)
@@ -60,8 +57,7 @@
     }
 
     function pinMonster(event) {
-        var $el = $(event.target);
-        var monsterTemplate = monsters.buildTemplateFor($el.text());
+        var monsterTemplate = monsters.buildTemplateFor($(event.target).data('lookup'));
 
         $('#monsterContainer').append(
             $(monsterTemplate)
