@@ -32,6 +32,36 @@
     position: absolute;
 }
 
+/* - Misc - */
+.center-text {
+    text-align: center;
+}
+.right-text {
+    text-align: right;
+}
+.left-text {
+    text-align: left;
+}
+
+.roll-table {
+    text-align: center;
+}
+.roll-table th:last-child, .roll-table td:last-child {
+    text-align: left;
+}
+
+.leading {
+    float: left;
+    padding-right: 5px;
+}
+
+.img-caption {
+    font-family: MrJeeves, sans-serif;
+    font-size: 0.9em;
+    text-align: right;
+    color: #333;
+}
+
 /* - Players Handbook - */
 /* Mostly copied from http://homebrewery.naturalcrit.com */
 .phb {
@@ -100,12 +130,21 @@ h1, h2, h3, h4{
 .phb .first-line {
     font-family: MrJeeves, serif;
 }
+
 .phb .descriptive {
     background-color: #faf7ea;
     border: solid 7px;
     border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAAM1BMVEUAAAAAAAAAAAAkAAA1GwA0GgA5GgA5GwA4HgA7HgA5HgA7HgA7HwA7HgA8HgA7HgA8HwDn6RpAAAAAEHRSTlMAAQcHMDExQ1ZW1dXY3t7+02zZCAAAAKNJREFUWMPt2LEOwyAMBNCkSXGpKfb/f20G3AGUiWOJdNlueYrt6di2J3xHrmZF9mVCdnd3T/NgCO+ItUWdB0P4RrQWfR4chOVggUcu/cgCH0X6o+ynuivg3QjIAm8FggQJEiRIkCBBggQJEoTApO56An15EFIrVgJ4vaAtlnlwEKKbGrLATlgOxg9XeORfv9IMH+Xzb7tSzGo+gL7chNcjXpUulIwXVrjWS+0AAAAASUVORK5CYII=") 12 round;
     border-image-outset: 4px;
     box-shadow: 0 0 6px #faf7ea;
+}
+.phb .descriptive-letter {
+    font-style: italic;
+    max-width: 260px;
+    margin-left: 20px;
+}
+.phb .descriptive-item {
+    font-size: 0.95em;
 }
 
 .monster {
