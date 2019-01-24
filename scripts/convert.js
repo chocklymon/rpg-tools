@@ -1,12 +1,12 @@
 "use strict";
 var fs = require("fs");
-var monsters = require("./assets/js/dnd5e-monsters");
+var monsters = require("../assets/js/dnd5e-monsters");
 
 // List of files to convert
-var files = ["source/PotA-ch2.html", "source/PotA-ch3.html", "source/PotA-ch4.html", "source/PotA-ch5.html", "source/PotA-ch6.html"];
+var files = ["../source/PotA-ch2.html", "../source/PotA-ch3.html", "../source/PotA-ch4.html", "../source/PotA-ch5.html", "../source/PotA-ch6.html"];
 
 // Initialize the bestiary
-var bestiary = JSON.parse(fs.readFileSync("source/dnd-5e-creatures.json", "utf8"));
+var bestiary = JSON.parse(fs.readFileSync("../source/dnd-5e-creatures.json", "utf8"));
 monsters.add(bestiary);
 
 // Convert each file

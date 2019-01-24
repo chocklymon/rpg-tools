@@ -1,6 +1,9 @@
 # IDE/Editor Generated Files
 .idea/
 
+# Package Manager Files
+node_modules/
+
 # Configuration
 frc/notes.json
 

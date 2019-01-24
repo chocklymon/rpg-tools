@@ -1,0 +1,147 @@
+{
+  "sources": [
+    {
+      "source": "PZO7101",
+      "storePage": "http://paizo.com/products/btpy9ssr",
+      "name": "Starfinder Core Rulebook",
+      "publisher": "Paizo Inc."
+    },
+    {
+      "source": "PZO7105",
+      "storePage": "http://paizo.com/products/btpy9ujg",
+      "name": "Starfinder Alien Archive",
+      "publisher": "Paizo Inc."
+    },
+    {
+      "source": "PZO7201",
+      "storePage": "http://paizo.com/products/btpy9qy6",
+      "name": "Starfinder Adventure Path: Incident at Absalom Station (Dead Suns 1 of 6)",
+      "publisher": "Paizo Inc."
+    },
+    {
+      "source": "PZO7202",
+      "storePage": "http://paizo.com/products/btpy9ujm",
+      "name": "Starfinder Adventure Path: Temple of the Twelve (Dead Suns 2 of 6)",
+      "publisher": "Paizo Inc."
+    },
+    {
+      "source": "Custom",
+      "name": "Custom Creation",
+      "publisher": "Self"
+    }
+  ],
+  "xpByCR": {
+    "0": 0,
+    "1/8": 50,
+    "1/6": 65,
+    "1/4": 100,
+    "1/3": 135,
+    "1/2": 200,
+    "1": 400,
+    "2": 600,
+    "3": 800,
+    "4": 1200,
+    "5": 1600,
+    "6": 2400,
+    "7": 3200,
+    "8": 4800,
+    "9": 6400,
+    "10": 9600,
+    "11": 12800,
+    "12": 19200,
+    "13": 25600,
+    "14": 38400,
+    "15": 51200,
+    "16": 76800,
+    "17": 102400,
+    "18": 153600,
+    "19": 204800,
+    "20": 307200,
+    "21": 409600,
+    "22": 614400,
+    "23": 819200,
+    "24": 1228800,
+    "25": 1638400
+  },
+  "statblocks": [
+    {
+      "_type": "trap",
+      "_source": "Custom",
+      "name": "Jury-Rigged Junk Trap",
+      "cr": "1",
+      "type": "technological",
+      "perception": "DC 18",
+      "disable": "Engineering DC 15 (disable tripwire)",
+      "trigger": "touch",
+      "reset": "none",
+      "effect": "laser +9 ranged (2d6+1 F)",
+      "roll": "9|2d6+1"
+    },
+    {
+      "_type": "creature",
+      "_source": "Custom",
+      "name": "Blargh",
+      "cr": "1",
+      "alignment": "N",
+      "size": "M",
+      "type": "aberration",
+      "init": 6,
+      "senses": "blindsense (life 60 ft., scent 120 ft.), darkvision 180 ft.",
+      "perception": 5,
+      "hp": 18,
+      "eac": 13,
+      "kac": 14,
+      "fort": 3,
+      "ref": 3,
+      "will": 3,
+      "defensiveAbilities": "no breath",
+      "immunities": "cold, disease, poison, starvation",
+      "resistances": "fire 5",
+      "speed": "40 ft.",
+      "attacks": [
+        {
+          "type": "melee",
+          "name": "bite",
+          "bonus": "+8",
+          "damage": "1d6+2 P",
+          "roll": "8|1d6+2"
+        }
+      ],
+      "str": 1,
+      "dex": 2,
+      "con": 4,
+      "int": -3,
+      "wis": 1,
+      "cha": 0,
+      "skills": {
+        "Acrobatics": 5,
+        "Athletics": 5,
+        "Stealth": 10
+      },
+      "abilities": "deaf",
+      "environment": "any",
+      "organization": ["solitary", "pair"],
+      "specialAbilities": [
+        {
+          "name": "Deaf",
+          "type": "ex",
+          "text": "Blarghs cannot attempt Perception checks to listen and are immune to effects that rely on hearing to function."
+        }
+      ],
+      "description": [
+        "Terrifying predators that dwell in the vast void of space"
+      ]
+    },
+    {
+      "_type": "affliction",
+      "_source": "Custom",
+      "name": "Mindrot",
+      "type": "disease (injury)",
+      "save": "Fortitude DC 13",
+      "track": "mental",
+      "frequency": "1/day",
+      "effect": "",
+      "cure": "2 consecutive saves"
+    }
+  ]
+}

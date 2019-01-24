@@ -1,0 +1,14 @@
+{
+  "name": "rpg-scripts",
+  "version": "1.0.0",
+  "description": "Scripts for helping with rpg data source manipulations",
+  "main": "get-mini-imgs.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Curtis Oakley",
+  "license": "MIT",
+  "dependencies": {
+    "csv": "^5.1.1"
+  }
+}

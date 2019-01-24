@@ -1,0 +1,78 @@
+{
+  "sources":{
+    "C":"Custom",
+    "EE":"D&D Icons of the Realms: Elemental Evil",
+    "RofD":"D&D Icons of the Realms: Rage of Demons",
+    "MM1":"D&D Icons of the Realms: Monster Menagerie",
+    "NMM":"Dungeons & Dragons Nolzur’s Marvelous Miniatures",
+    "B1":"Pathfinder Pawns: Bestiary Box",
+    "B2":"Pathfinder Pawns: Bestiary 2 Box",
+    "B3":"Pathfinder Pawns: Bestiary 3 Box",
+    "B4":"Pathfinder Pawns: Bestiary 4 Box",
+    "B5":"Pathfinder Pawns: Bestiary 5 Box",
+    "MC":"Pathfinder Pawns: Monster Codex Box",
+    "NPC":"Pathfinder Pawns: NPC Codex Box",
+    "PFS":"Pathfinder Pawns: Pathfinder Society Pawn Collection",
+    "SM":"Pathfinder Pawns: Summon Monster Pawn Collection",
+    "VC":"Pathfinder Pawns: Villain Codex Box",
+    "MM":"Pathfinder Pawns: Mummy's Mask Adventure Path Pawn Collection",
+    "RotRL":"Pathfinder Pawns: Rise of the Rune Lords Pawn Collection",
+    "RoW":"Pathfinder Pawns: Reign of Winter Adventure Path Pawn Collection",
+    "S&S":"Pathfinder Pawns: Skull and Shackles Adventure Path Pawn Collection",
+    "SS":"Pathfinder Pawns: Shattered Star Adventure Path Pawn Collection",
+    "WotR":"Pathfinder Pawns: Wrath of the Righteous Adventure Path Pawn Collection"
+  },
+  "minis":[
+    {
+      "name": "water elemental",
+      "mini": [
+        {
+          "img": "/source/img/mini/water_elemental__0.jpg",
+          "source": "EE",
+          "qty": 1,
+          "size": "M"
+        }
+      ],
+      "alt": [
+        "elemental, water"
+      ],
+      "pawn": [
+        {
+          "source": "B1",
+          "qty": 1,
+          "size": "S"
+        },
+        {
+          "source": "B1",
+          "qty": 1,
+          "size": "M"
+        },
+        {
+          "source": "B1",
+          "qty": 1,
+          "size": "L"
+        },
+        {
+          "source": "SM",
+          "qty": 3,
+          "size": "S"
+        },
+        {
+          "source": "SM",
+          "qty": 3,
+          "size": "M"
+        },
+        {
+          "source": "SM",
+          "qty": 1,
+          "size": "L"
+        },
+        {
+          "source": "SM",
+          "qty": 1,
+          "size": "H"
+        }
+      ]
+    }
+  ]
+}

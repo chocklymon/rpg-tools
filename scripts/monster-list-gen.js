@@ -1,5 +1,8 @@
+/* Generates markdown for a druid based on the animals they know. */
+'use strict';
+
 var fs = require('fs'),
-    bestiary = require('./assets/js/dnd5e-monsters');
+    bestiary = require('../assets/js/dnd5e-monsters');
 
 
 // List of monsters the druid knows
@@ -17,7 +20,7 @@ var druidAlignment = 'neutral';
 
 
 // Read the file
-fs.readFile('./source/dnd-5e-creatures.json', 'utf8', function(err, data) {
+fs.readFile('../source/dnd-5e-creatures.json', 'utf8', function(err, data) {
     var monster,
         sortName,
         found = {},
