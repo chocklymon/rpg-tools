@@ -20,14 +20,15 @@
     "RoW":"Pathfinder Pawns: Reign of Winter Adventure Path Pawn Collection",
     "S&S":"Pathfinder Pawns: Skull and Shackles Adventure Path Pawn Collection",
     "SS":"Pathfinder Pawns: Shattered Star Adventure Path Pawn Collection",
-    "WotR":"Pathfinder Pawns: Wrath of the Righteous Adventure Path Pawn Collection"
+    "WotR":"Pathfinder Pawns: Wrath of the Righteous Adventure Path Pawn Collection",
+    "GS": "Pathfinder Pawns: Giantslayer Adventure Path Pawn Collection"
   },
   "minis":[
     {
       "name": "water elemental",
       "mini": [
         {
-          "img": "/source/img/mini/water_elemental__0.jpg",
+          "img": "source/img/mini/water_elemental__0.jpg",
           "source": "EE",
           "qty": 1,
           "size": "M"

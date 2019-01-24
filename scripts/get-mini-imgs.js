@@ -45,10 +45,10 @@ fs.readFile(file, 'utf8', function(err, data) {
                 if ('img' in mini && mini.img.length > 4) {
                     const img = mini.img;
                     if (img.substring(0, 4) === 'http') {
-                        const newImg = '/source/img/mini/' + getImgName(miniInfo, i, img);
+                        const newImg = 'source/img/mini/' + getImgName(miniInfo, i, img);
                         mini.img = newImg;
 
-                        downloadFile(img, '..' + newImg, function(err) {
+                        downloadFile(img, '../' + newImg, function(err) {
                             if (err) {
                                 throw err;
                             }

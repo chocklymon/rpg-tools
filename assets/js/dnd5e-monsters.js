@@ -261,7 +261,7 @@ if (!window) {
                 return '<div class="monster compact">' +
                     '<p>' + monster.name +
                     ' (' + sizes[monster.size] + ' ' + alignments[monster.alignment] + ' ' + getType(monster.type, true) + ')' +
-                    ' (CR ' + monster.cr + ')</p><hr>' +
+                    ' (CR ' + monster.cr + ')<span class="mini-icon"></span></p><hr>' +
                     '<p><strong>AC</strong> ' + truncateToParentheses(monster.ac) +
                     ' <strong>HP</strong> ' + truncateToParentheses(monster.hp) +
                     ' <strong>SPD</strong> ' + monster.speed + '</p>' +
@@ -273,7 +273,7 @@ if (!window) {
 
             function buildFullTemplate(monster) {
                 return '<div class="monster">' +
-                    '<h2>' + monster.name + '</h2>' +
+                    '<h2>' + monster.name + '<span class="mini-icon"></span></h2>' +
                     '<p><em>' + sizes[monster.size] + ' ' + getType(monster.type) + ', ' + monster.alignment + '</em></p>' +
                     '<hr>' +
                     '<ul>' +
@@ -566,7 +566,9 @@ if (!window) {
             buildTemplateFor: formatIfNameExists(formats.html),
 
             getName: getMonsterName,
-            getMonster: getMonster
+            getMonster: getMonster,
+
+            sizes: sizes
         };
     }
 

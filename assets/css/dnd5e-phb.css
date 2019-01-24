@@ -28,8 +28,28 @@
     overflow-y: scroll;
 }
 
-#monsterDisplay {
+#monsterDisplay, #miniInfo {
     position: absolute;
+}
+
+.mini-icon {
+    display: none;
+}
+.has-mini .mini-icon {
+    display: inline-block;
+}
+
+#miniInfo div, #miniInfo h3 {
+    clear: both;
+}
+#miniInfo div {
+    margin-bottom: 20px;
+}
+#miniInfo img {
+    float: left;
+    max-width: 50px;
+    padding-right: 10px;
+    padding-left: 5px;
 }
 
 .lookup {
