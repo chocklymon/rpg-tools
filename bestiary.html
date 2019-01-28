@@ -244,6 +244,11 @@
                         </div>
                     </div>
                     <div ng-bind-html="vm.monster.html"></div>
+                    <div class="row" ng-show="vm.monster.json.img">
+                        <div class="col-xs-12 col-lg-10">
+                            <img src="" alt="{{vm.monster.json.name}}" class="img-responsive" ng-src="{{vm.monster.json.img}}"/>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-xs-12 col-sm-4">
                     <!-- TODO: This can be made into a component instead of duplicated -->
