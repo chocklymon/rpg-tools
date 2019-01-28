@@ -1,4 +1,8 @@
+/*
+Takes a list of html source files and replaces monsters with data lookup tags.
+ */
 "use strict";
+
 var fs = require("fs");
 var monsters = require("../assets/js/dnd5e-monsters");
 

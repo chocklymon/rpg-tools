@@ -9,6 +9,7 @@
   "author": "Curtis Oakley",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.3",
     "csv": "^5.1.1"
   }
 }
