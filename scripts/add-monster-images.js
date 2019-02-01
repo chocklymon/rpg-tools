@@ -22,8 +22,7 @@ let changed = 0;
 listFiles('../' + imgDirectory)
     .then(function(imgFiles) {
         let index,
-            name,
-            loc;
+            name;
 
         imgFiles.forEach(function(img) {
             name = stripExtension(img).toLowerCase();
@@ -31,17 +30,33 @@ listFiles('../' + imgDirectory)
 
             if (name in bestiaryNameIndex) {
                 index = bestiaryNameIndex[name];
-            } else if ((loc = name.indexOf(',')) > 0) {
+            } else if (name.indexOf(',') > 0) {
                 // Name something like: 'Blight, Twig' so try to switch and look for a match
-                name = name.substring(loc + 1).trim() + ' ' + name.substring(0, loc).trim();
-                if (name in bestiaryNameIndex) {
-                    index = bestiaryNameIndex[name];
+                // This also handles cases like 'Dragon, Green, Young' to find 'Young Green Dragon'
+                let combination, i, l, temp,
+                    pieces = name.split(',').map(function(s) {
+                        return s.trim();
+                    });
+                for (i = 1, l = pieces.length; i < l; i++) {
+                    // Swap
+                    combination = pieces.slice();
+                    temp = combination[i];
+                    combination[i] = combination[0];
+                    combination[0] = temp;
+
+                    // Search for the name
+                    name = combination.join(' ');
+                    if (name in bestiaryNameIndex) {
+                        index = bestiaryNameIndex[name];
+                        break;
+                    }
                 }
             }
 
             if (index >= 0) {
                 let imgFile = imgDirectory + img;
                 if (!('img' in bestiary[index] && bestiary[index].img === imgFile)) {
+                    console.log('Setting ' + bestiary[index].name + ' to use ' + img);
                     bestiary[index].img = imgFile;
                     changed++;
                 }
@@ -116,4 +131,3 @@ function strSplice(str, needle, fromEnd, prefix) {
     }
     throw 'Needle not found.';
 }
-
