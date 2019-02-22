@@ -30,8 +30,8 @@
             // Get the bestiary
             $http.get('source/dnd-5e-creatures.json')
                 .then(function(response) {
-                    bestiary.add(response.data);
-                    angular.forEach(response.data, function(monster) {
+                    bestiary.add(response.data.creatures);
+                    angular.forEach(response.data.creatures, function(monster) {
                         monsterNames.push(monster.name.toLowerCase());
                     });
                 })

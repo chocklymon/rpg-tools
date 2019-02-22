@@ -1,50 +1,54 @@
-[
-  {
-    "name": "Plaguechanged Ogre",
-    "size": "L",
-    "type": "aberration, Chocklymon",
-    "alignment": "chaotic evil",
-    "ac": "14 (natural armor)",
-    "hp": "76 (10d10 + 21)",
-    "speed": "40 ft.",
-    "str": "19",
-    "dex": "8",
-    "con": "16",
-    "int": "6",
-    "wis": "8",
-    "cha": "7",
-    "conditionImmune": "charmed",
-    "senses": "darkvision 60 ft.",
-    "passive": "9",
-    "languages": "Common, Giant",
-    "cr": "3",
-    "trait": [
-      {
-        "name": "Spellscarred",
-        "text": "This ogre has been touched by the ravages of the spellplague. The weave twists and contorts in its presence. All spellcasters that cast a spell within 5 ft. of the ogre, target the ogre with a spell, or include the ogre in an area of effect spell must roll a d20 immediately after they cast the spell as though they had the Wild Magic Surge feature. Creatures with the Wild Magic Surge class feature roll a d10 in place of the regular d20 for spells of 1st level or higher, and a d20 for cantrips."
-      },
-      {
-        "name": "Thundering Weapon (once per long or short rest)",
-        "text": "As a bonus action, the ogre can wreath one melee weapon it is wielding in blue flames. The ogre is unharmed by these flames, which lasts until the end of the ogre's next turn. While wreathed in flames, the weapon deals an extra 3 (1d6) thunder damage on a hit."
-      }
-    ],
-    "action": [
-      {
-        "name": "Greatclub",
-        "text": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
-        "attack": "|6|2d8+4"
-      },
-      {
-        "name": "Javelin",
-        "text": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.",
-        "attack": "|6|2d6+4"
-      }
-    ],
-    "reaction": [
-      {
-        "name": "Spell Twisting (once per long or short rest)",
-        "text": "As a reaction the ogre can negate the harmful effects of one spell that targets it. When it does so it regains 1d4 HP per level of the spell that was cast at it (minimum of 1d4)."
-      }
-    ]
-  }
-]
+{
+  "creatures": [
+    {
+      "name": "Plaguechanged Ogre",
+      "size": "L",
+      "type": "aberration",
+      "alignment": "chaotic evil",
+      "ac": "14 (natural armor)",
+      "hp": "76 (10d10 + 21)",
+      "speed": "40 ft.",
+      "str": "19",
+      "dex": "8",
+      "con": "16",
+      "int": "6",
+      "wis": "8",
+      "cha": "7",
+      "conditionImmune": "charmed",
+      "senses": "darkvision 60 ft.",
+      "passive": "9",
+      "languages": "Common, Giant",
+      "cr": "3",
+      "trait": [
+        {
+          "name": "Spellscarred",
+          "text": "This ogre has been touched by the ravages of the spellplague. The weave twists and contorts in its presence. All spellcasters that cast a spell within 5 ft. of the ogre, target the ogre with a spell, or include the ogre in an area of effect spell must roll a d20 immediately after they cast the spell as though they had the Wild Magic Surge feature. Creatures with the Wild Magic Surge class feature roll a d10 in place of the regular d20 for spells of 1st level or higher, and a d20 for cantrips."
+        },
+        {
+          "name": "Thundering Weapon (once per long or short rest)",
+          "text": "As a bonus action, the ogre can wreath one melee weapon it is wielding in blue flames. The ogre is unharmed by these flames, which lasts until the end of the ogre's next turn. While wreathed in flames, the weapon deals an extra 3 (1d6) thunder damage on a hit."
+        }
+      ],
+      "action": [
+        {
+          "name": "Greatclub",
+          "text": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
+          "attack": "|6|2d8+4"
+        },
+        {
+          "name": "Javelin",
+          "text": "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage.",
+          "attack": "|6|2d6+4"
+        }
+      ],
+      "reaction": [
+        {
+          "name": "Spell Twisting (once per long or short rest)",
+          "text": "As a reaction the ogre can negate the harmful effects of one spell that targets it. When it does so it regains 1d4 HP per level of the spell that was cast at it (minimum of 1d4)."
+        }
+      ],
+      "source": "Chocklymon"
+    }
+  ],
+  "version": "1.0.0"
+}

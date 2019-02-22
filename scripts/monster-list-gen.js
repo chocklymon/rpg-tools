@@ -31,9 +31,8 @@ fs.readFile('../source/dnd-5e-creatures.json', 'utf8', function(err, data) {
     }
 
     // Add the creature data
-    bestiary.add(
-        JSON.parse(data)
-    );
+    var bestiaryData = JSON.parse(data);
+    bestiary.add(bestiaryData.creatures);
 
     // Get the markdown and sort name for each monster
     druidMonsters.forEach(function (name) {

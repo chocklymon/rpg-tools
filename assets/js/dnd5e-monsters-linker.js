@@ -8,14 +8,16 @@
     function loadMonsters() {
         $.getJSON('source/dnd-5e-creatures.json')
             .then(function(bestiary) {
-                var $el;
+                // Initialize the monsters
+                monsters.add(bestiary.creatures);
 
-                monsters.add(bestiary);
+                // Initialize the data lookup to display monsters
                 $('[data-lookup]').each(function(i, el) {
                     $(el).addClass('lookup')
                         .on('click', pinMonster)
                         .hover(openMonsterDisplay, closeMonsterDisplay);
                 });
+
                 console.log('Monsters initialized');
             })
             .catch(function(err) {

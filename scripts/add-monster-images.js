@@ -14,7 +14,7 @@ const bestiaryFile = '../source/dnd-5e-creatures.json';
 const bestiary = JSON.parse(fs.readFileSync(bestiaryFile, 'utf8'));
 let bestiaryNameIndex = {};
 
-bestiary.forEach(function(monster, i) {
+bestiary.creatures.forEach(function(monster, i) {
     bestiaryNameIndex[monster.name.toLowerCase()] = i;
 });
 
@@ -55,9 +55,9 @@ listFiles('../' + imgDirectory)
 
             if (index >= 0) {
                 let imgFile = imgDirectory + img;
-                if (!('img' in bestiary[index] && bestiary[index].img === imgFile)) {
-                    console.log('Setting ' + bestiary[index].name + ' to use ' + img);
-                    bestiary[index].img = imgFile;
+                if (!('img' in bestiary.creatures[index] && bestiary.creatures[index].img === imgFile)) {
+                    console.log('Setting ' + bestiary.creatures[index].name + ' to use ' + img);
+                    bestiary.creatures[index].img = imgFile;
                     changed++;
                 }
             } else {

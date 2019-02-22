@@ -536,17 +536,7 @@ if (!window) {
              */
             add: function(bestiary) {
                 // Store the monsters keyed by name
-                var loc;
                 forEach(bestiary, function(i, monster) {
-                    // Extract the source from the type information
-                    loc = monster.type.lastIndexOf(',');
-                    if (loc > 0) {
-                        monster.source = monster.type.substring(loc + 1).trim();
-                        monster.type = monster.type.substring(0, loc);
-                    } else {
-                        monster.source = '';
-                    }
-
                     // Save keyed by lowercase name
                     monsters[monster.name.toLowerCase()] = monster;
                 });

@@ -11,7 +11,7 @@ var files = ["../source/PotA-ch2.html", "../source/PotA-ch3.html", "../source/Po
 
 // Initialize the bestiary
 var bestiary = JSON.parse(fs.readFileSync("../source/dnd-5e-creatures.json", "utf8"));
-monsters.add(bestiary);
+monsters.add(bestiary.creatures);
 
 // Convert each file
 for (var i = 0, l = files.length; i < l; i++) {
