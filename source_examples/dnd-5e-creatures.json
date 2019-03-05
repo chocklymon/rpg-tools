@@ -8,15 +8,15 @@
       "ac": "14 (natural armor)",
       "hp": "76 (10d10 + 21)",
       "speed": "40 ft.",
-      "str": "19",
-      "dex": "8",
-      "con": "16",
-      "int": "6",
-      "wis": "8",
-      "cha": "7",
+      "str": 19,
+      "dex": 8,
+      "con": 16,
+      "int": 6,
+      "wis": 8,
+      "cha": 7,
       "conditionImmune": "charmed",
       "senses": "darkvision 60 ft.",
-      "passive": "9",
+      "passive": 9,
       "languages": "Common, Giant",
       "cr": "3",
       "trait": [
@@ -47,8 +47,18 @@
           "text": "As a reaction the ogre can negate the harmful effects of one spell that targets it. When it does so it regains 1d4 HP per level of the spell that was cast at it (minimum of 1d4)."
         }
       ],
+      "legendary": {
+        "numUses": 1,
+        "name": "ogre",
+        "actions": [
+          {
+            "name": "Weave Distort",
+            "text": "The ogre causes a distortion in the weave, magically transporting one target of the ogre's choice up to 30 ft. to an unoccupied space the ogre can see."
+          }
+        ]
+      },
       "source": "Chocklymon"
     }
   ],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
