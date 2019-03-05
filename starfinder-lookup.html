@@ -294,7 +294,7 @@
                         html += '<div><h5>Defense ' + tagIf('rp', 'span', '<strong style="padding-left:15px">RP</strong> ') + tagIf('hp', 'span', '<strong>HP</strong> ') + '</h5>' +
                                 safeLabel(['EAC', 'KAC']) +
                                 safeLabel(['Fort', 'Ref', 'Will'], null, true) +
-                                safeLabel(['Defensive Abilities', 'DR', 'Immunities', 'Resistances'], ['defensiveAbilities', 'dr', 'immunities', 'resistances']) +
+                                safeLabel(['Defensive Abilities', 'DR', 'SR', 'Immunities', 'Resistances'], ['defensiveAbilities', 'dr', 'sr', 'immunities', 'resistances']) +
                                 safeLabel(['Weaknesses']) +
                             '</div>';
 
@@ -316,6 +316,7 @@
 
                         html += safeLabel(['Space', 'Reach'])
                               + safeLabel(['Offensive Abilities'], ['offensiveAbilities']);
+                        // TODO handle spellBlocks and spellExtra
                         if (statblock.spellClass || statblock.spellAbility) {
                             // Add spells
                             html += '<p><strong>';
@@ -384,11 +385,12 @@
                             }
                             html += '</p></div>';
                         }
+                        // TODO variant description block
                     } else if (statblock._type === 'trap') {
                         // Add trap stats
                         html += safeLabel(['Type', 'Perception', 'Disable']) +
                                 safeLabel(['Trigger', 'Reset']) +
-                                safeLabel(['Effect']) + '</div>';
+                                safeLabel(['Effect']) + '</div>'; // TODO multiple effect traps (or enable MarkDown)
                     } else if (statblock._type === 'affliction') {
                         // Add affliction stats
                         html += safeLabel(['Type', 'Save']) +

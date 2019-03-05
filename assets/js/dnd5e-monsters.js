@@ -239,7 +239,7 @@ if (!window) {
 
             function buildCompactActions(monster) {
                 var actions =  buildActionList('trait', monster, 'Traits', true, true) +
-                    buildActionList('legendary', monster, 'Legendary', true, true) +
+                    buildLegendary(monster, true) +
                     buildActionList('reaction', monster, 'Reactions', true, true) +
                     buildActionList('action', monster, '', true, true);
 
@@ -291,9 +291,26 @@ if (!window) {
                     '<hr>' +
                     buildActionList('trait', monster) +
                     buildActionList('action', monster, 'Actions') +
-                    buildActionList('legendary', monster, 'Legendary Actions', true) +
+                    buildLegendary(monster) +
                     buildActionList('reaction', monster, 'Reactions') +
                     '</div>';
+            }
+
+            function buildLegendary(monster, compact) {
+                var description = '';
+                if ('legendary' in monster) {
+                    if (compact) {
+                        description += '<strong><em>Legendary Actions (' + monster.legendary.numUses + '): </em></strong>';
+                    } else {
+                        description += '<h3>Legendary Actions</h3>' +
+                            '<p>' + getLegendaryDescription(monster) + '</p>';
+
+                        forEach(monster.legendary.actions, function(i, ability) {
+                            description += buildAction(ability, true, compact);
+                        });
+                    }
+                }
+                return description;
             }
 
             function getType(type, compact) {
@@ -423,6 +440,19 @@ if (!window) {
                 return markdown;
             }
 
+            function buildLegendary(monster) {
+                var description = '';
+                if ('legendary' in monster) {
+                    description += '\n> ### Legendary Actions\n' +
+                        '> ' + getLegendaryDescription(monster) + '\n>';
+
+                    forEach(monster.legendary.actions, function(i, ability) {
+                        description += formatAction(ability, "**");
+                    });
+                }
+                return description;
+            }
+
             function getMarkdown(monster) {
                 if (monster) {
                     return '___\n' +
@@ -441,7 +471,7 @@ if (!window) {
                         '>___' +
                         getActionList('trait', monster) +
                         getActionList('action', monster, 'Actions') +
-                        getActionList('legendary', monster, 'Legendary Actions', '**') +
+                        buildLegendary(monster) +
                         getActionList('reaction', monster, 'Reactions');
                 }
                 return '';
@@ -502,6 +532,29 @@ if (!window) {
             } else {
                 return null;
             }
+        }
+
+        function getLegendaryDescription(monster) {
+            if ('text' in monster.legendary) {
+                // We have a text to use
+                return monster.legendary.text;
+            }
+
+            // Generate the legendary description
+            var name = 'The ' + monster.name.toLowerCase();
+            if ('name' in monster.legendary) {
+                // We have a name to use
+                if (monster.legendary.name === monster.name) {
+                    // Proper name
+                    name = monster.name;
+                } else {
+                    // General name, prepend with 'The'
+                    name = 'The ' + monster.legendary.name;
+                }
+            }
+            return name + ' can take ' + monster.legendary.numUses +
+                " legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. " +
+                name + " regains spent legendary actions at the start of its turn.";
         }
 
         function formatModifier(modifier) {

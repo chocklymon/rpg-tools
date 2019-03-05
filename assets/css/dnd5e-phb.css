@@ -222,10 +222,14 @@ h1, h2, h3, h4{
 /* Monster ability scores table */
 .monster hr+table {
     margin: 0;
+    width: 100%;
     column-span: 1;
     background-color: transparent;
     border-style: none;
     border-image: none;
+    text-align: center;
+}
+.monster hr+table th {
     text-align: center;
 }
 .monster hr+table tbody tr:nth-child(odd), .monster hr+table tbody tr:nth-child(even) {
