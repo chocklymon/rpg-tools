@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="miniatures">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Miniatures Search</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/dnd5e-phb-fonts.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/dnd5e-phb.css"/>
+</head>
+<body>
+<div class="container-fluid" data-ng-controller="main as vm">
+    <form ng-submit="vm.search(vm.searchTerm)" class="form-horizontal">
+        <div class="form-group">
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" title="Search" placeholder="Miniature name..."
+                           ng-model="vm.searchTerm">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12" ng-show="vm.miniatures.length >= 2">
+                Did you mean:
+                <span ng-repeat="miniature in vm.miniatures">
+                    <button type="button" class="btn btn-default"
+                            ng-click="vm.selectMiniature(miniature)">{{miniature}}</button>
+                </span>
+            </div>
+        </div>
+        <div>
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <h3>{{vm.miniature.name}}</h3>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-sm-6">
+                    <!-- TODO: This can be made into a component instead of duplicated -->
+                    <div class="row" ng-show="vm.miniature.mini">
+                        <div class="col-xs-12">
+                            <h4>Miniatures</h4>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="mini in vm.miniature.mini">
+                        <div class="col-xs-4 col-md-2">
+                            <img src="" alt="{{vm.miniature.name}} miniature {{$index}}" class="img-responsive" ng-src="{{mini.img}}" ng-if="mini.img"/>
+                        </div>
+                        <div class="col-xs-8 col-md-10">
+                            <p>{{mini.source}}</p>
+                            <p>Quantity: <span>{{mini.qty}}</span> — Size: <span>{{mini.size}}</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="row" ng-show="vm.miniature.pawn">
+                        <div class="col-xs-12">
+                            <h4>Pawns</h4>
+                        </div>
+                    </div>
+                    <div class="row" ng-repeat="mini in vm.miniature.pawn">
+                        <div class="col-xs-4 col-md-2">
+                            <img src="" alt="{{vm.miniature.name}} miniature {{$index}}" class="img-responsive" ng-src="{{mini.img}}" ng-if="mini.img"/>
+                        </div>
+                        <div class="col-xs-8 col-md-10">
+                            <p>{{mini.source}}</p>
+                            <p>Quantity: <span>{{mini.qty}}</span> — Size: <span>{{mini.size}}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row" ng-show="vm.lastErr">
+        <div class="col-xs-12">
+            <pre>{{vm.lastErr}}</pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="text-center text-muted small">&copy; 2019 Curtis Oakley</p>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js" type="application/javascript"></script>
+<script src="assets/js/levenshtein.js" type="application/javascript"></script>
+<script type="application/javascript">
+    'use strict';
+    angular.module('miniatures', ['co.levenshtein'])
+        .controller('main', ['$http', 'levenshtein', function($http, levenshtein) {
+            var vm = this;
+            var miniatures = {},
+                miniaturesIndexes = {},
+                // TODO remove this redundancy
+                sizes = {
+                    'T': 'Tiny',
+                    'S': 'Small',
+                    'M': 'Medium',
+                    'L': 'Large',
+                    'H': 'Huge',
+                    'G': 'Gargantuan'
+                };
+
+            // Get the miniatures
+            $http.get('source/miniatures.json')
+                .then(function(response) {
+                    miniatures = response.data;
+
+                    function addIndex(name, index) {
+                        if (!(name in miniaturesIndexes)) {
+                            miniaturesIndexes[name] = [];
+                        }
+                        miniaturesIndexes[name].push(index);
+                    }
+
+                    // Save the indices of the miniatures by their name
+                    angular.forEach(miniatures.minis, function(mini, index) {
+                        addIndex(mini.name, index);
+
+                        // Add the alt names, if any. Alt names must be added after the mini name.
+                        if ('alt' in mini) {
+                            angular.forEach(mini.alt, function(alt) {
+                                addIndex(alt, index);
+                            });
+                        }
+                    });
+                })
+                .catch(function(err) {
+                    vm.lastErr = err;
+                });
+
+            function normalizeMiniInfo(miniInfo) {
+                var infos = [];
+                if ('mini' in miniInfo && miniInfo.mini.length > 0) {
+                    infos = infos.concat(miniInfo.mini);
+                }
+                if ('pawn' in miniInfo && miniInfo.pawn.length > 0) {
+                    infos = infos.concat(miniInfo.pawn);
+                }
+                angular.forEach(infos, function(m) {
+                    // Replace the source key with the source name
+                    if ('source' in m && m.source in miniatures.sources) {
+                        m.source = miniatures.sources[m.source];
+                    }
+                    if (!('qty' in m)) {
+                        m.qty = '?';
+                    }
+                    if ('size' in m) {
+                        // Replace the size with the size name
+                        if (m.size in sizes) {
+                            m.size = sizes[m.size];
+                        }
+                    } else {
+                        m.size = '?';
+                    }
+                });
+                return miniInfo;
+            }
+
+            function selectMiniature(name) {
+                if (name && name in miniaturesIndexes) {
+                    var index = miniaturesIndexes[name];
+
+                    vm.miniature = normalizeMiniInfo(miniatures.minis[index[0]]);
+                }
+            }
+
+            function findMiniatures(name) {
+                // The monster must have a levenshtein distance of less than seven from the name
+                var shortestDistance = 10;
+
+                var foundMiniatures = [],
+                    foundNames = {},
+                    miniatureNames = [],
+                    i, distance, loc, keep;
+                name = name.toLowerCase();
+
+                // Go through all the miniatures to find ones with a similar name
+                angular.forEach(miniaturesIndexes, function(indices, miniatureName) {
+                    if ((loc = miniatureName.indexOf(name)) !== -1) {
+                        // Name is a substring or exact match
+                        distance = (loc === 0 && name.length === miniatureName.length) ? -1 : 0;
+                        foundMiniatures.push({'miniature': miniatureName, 'distance': distance, 'indices': indices});
+
+                        // Shrink the shortest distance when we have close matches
+                        if (shortestDistance > 4) {
+                            shortestDistance--;
+                        }
+                    } else {
+                        // Find the monsters with the closest levenshtein distance to the name
+                        distance = levenshtein(name, miniatureName);
+                        if (distance < shortestDistance) {
+                            // Closer match found
+                            shortestDistance = distance;
+
+                            // Place this monster into the array
+                            foundMiniatures.push({'miniature': miniatureName, 'distance': distance, 'indices': indices});
+                        } else if (distance === shortestDistance) {
+                            foundMiniatures.push({'miniature': miniatureName, 'distance': distance, 'indices': indices});
+                        }
+                    }
+                });
+
+                // Remove monsters that have a shorter distance
+                for (i = foundMiniatures.length - 1; i >= 0; i--) {
+                    if (foundMiniatures[i].distance > shortestDistance) {
+                        foundMiniatures.splice(i, 1);
+                    }
+                }
+
+                // Sort by distance
+                foundMiniatures.sort(function(a, b) {
+                    if (a.distance === b.distance) {
+                        return 0;
+                    }
+                    return a.distance < b.distance ? -1 : 1;
+                });
+
+                // Turn into an array of names of unique miniatures
+                for (i = 0; i < foundMiniatures.length; i++) {
+                    // This relies on the fact that the miniatures alt names are added after the miniature, so the
+                    // first one found will have the default name.
+                    keep = true;
+                    angular.forEach(foundMiniatures[i].indices, function(index) {
+                        if (index in foundNames) {
+                            keep = false;
+                        }
+                        foundNames[index] = true;
+                    });
+                    if (keep) {
+                        miniatureNames.push(foundMiniatures[i].miniature);
+                    }
+                }
+
+                return miniatureNames;
+            }
+
+            vm.search = function(name) {
+                // Find monsters with similar names
+                vm.miniatures = findMiniatures(name);
+
+                // Select the first monster
+                selectMiniature(vm.miniatures.length > 0 ? vm.miniatures[0] : null);
+            };
+            vm.selectMiniature = selectMiniature;
+        }]);
+</script>
+</body>
+</html>
