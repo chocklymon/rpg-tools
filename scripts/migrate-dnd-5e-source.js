@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
+const intParse = require('./int-parse.js');
 
 // Load the file update the version
 const fileName = __dirname + '/../source/dnd-5e-creatures.json';
@@ -60,7 +61,7 @@ fs.readFileAsync(fileName, 'utf8')
                 // Convert all integers from strings to actual integers
                 ['str', 'dex', 'con', 'int', 'wis', 'cha', 'passive'].forEach(function(attribute) {
                     if (attribute in monster) {
-                        monster[attribute] = parseIntSafe(monster[attribute]);
+                        monster[attribute] = intParse(monster[attribute]);
                     }
                 });
 
@@ -84,7 +85,7 @@ fs.readFileAsync(fileName, 'utf8')
                         action = monster.legendary[i];
                         if (('name' in action && (result = legendaryActionRegex.exec(action.name)))
                             || ('text' in action && (result = legendaryActionRegex.exec(action.text)))) {
-                            numActions = parseIntSafe(result[2]);
+                            numActions = intParse(result[2]);
                             monsterActionName = result[1];
                             monster.legendary.splice(i, 1);
                             break;
@@ -138,24 +139,3 @@ fs.readFileAsync(fileName, 'utf8')
     .catch(function(err) {
         console.warn('Error with migration:', err);
     });
-
-/**
- * Returns the provided value as an integer if it can be parsed as an integer, otherwise it returns the value as it
- * @param value
- * @returns {*}
- */
-function parseIntSafe(value) {
-    if (typeof value === 'number') {
-        return value;
-    }
-
-    // Make sure we only have characters that can be a number
-    if (/[^0-9\-.]/.test(value)) {
-        return value;
-    }
-    let parsed = parseInt(value, 10);
-    if (isNaN(parsed) || !isFinite(parsed)) {
-        return value;
-    }
-    return parsed;
-}

@@ -6,7 +6,9 @@ This converts Game Master 5 formatted xml files to JSON.
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const parseString = Promise.promisify(require('xml2js').parseString);
-const util = require('util');
+const intParse = require('./int-parse.js');
+
+const legendaryActionRegex = /Legendary Actions \((\d+)\/Turn\)/;
 
 // TODO get arg for the file
 // TODO allow for a second arg to be specified that appends to an existing source file
@@ -83,7 +85,7 @@ function csvSplit(str, isNumeric) {
             if (isNumeric) {
                 // Convert to an integer
                 v = parseInt(v, 10);
-                if (!validNumber(v)) {
+                if (!intParse.naturalNumber(v)) {
                     v = null;
                 }
             }
@@ -94,34 +96,12 @@ function csvSplit(str, isNumeric) {
         });
 }
 
-function validNumber(num) {
-    return !isNaN(num) && isFinite(num) && num >= 0
-}
-
-function parseIntSafe(value) {
-    if (typeof value === 'number') {
-        return value;
-    }
-
-    // Make sure we only have characters that can be a number
-    if (/[^0-9\-.]/.test(value)) {
-        return value;
-    }
-    let parsed = parseInt(value, 10);
-    if (isNaN(parsed) || !isFinite(parsed)) {
-        return value;
-    }
-    return parsed;
-}
-
-const legendaryActionRegex = /Legendary Actions \((\d+)\/Turn\)/;
-
 function processMonster(monster) {
     let m = {},
         value,
         result;
 
-    for (var i in monster) {
+    for (let i in monster) {
         if (monster.hasOwnProperty(i)) {
             value = monster[i];
             if (value.length > 0) {
@@ -138,7 +118,7 @@ function processMonster(monster) {
                         // Extract the number of uses and the name from the text
                         if ('name' in value[0] && (result = legendaryActionRegex.exec(value[0].name))) {
                             m[i] = {
-                                "numUses": parseIntSafe(result[1]),
+                                "numUses": intParse(result[1]),
                                 "actions": processTraits(value.slice(1)),
                             };
                         } else {
@@ -167,7 +147,7 @@ function processMonster(monster) {
                     case 'cha':
                     case 'passive':
                         value = parseInt(value[0], 10);
-                        if (validNumber(value)) {
+                        if (intParse.naturalNumber(value)) {
                             m[i] = value;
                         }
                         break;
