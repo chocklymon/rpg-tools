@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.3",
-    "csv": "^5.1.1"
+    "csv": "^5.1.1",
+    "xml2js": "^0.4.19"
   }
 }
