@@ -3,47 +3,69 @@ This converts Game Master 5 formatted xml files to JSON.
  */
 "use strict";
 
+const out = require('./logger');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const parseString = Promise.promisify(require('xml2js').parseString);
-const intParse = require('./int-parse.js');
+const intParse = require('./int-parse');
 
 const legendaryActionRegex = /Legendary Actions \((\d+)\/Turn\)/;
 
-// TODO get arg for the file
-// TODO allow for a second arg to be specified that appends to an existing source file
-fs.readFileAsync(__dirname + "/../source/Volo's Guide to Monsters.xml", 'utf8')
-    .then(function(contents) {
+// Process the command line arguments
+if (process.argv.length <= 2) {
+    out.error('Usage: node gm5xml-to-json.js FILE [Append]\nMissing file argument');
+    return
+}
+const inputFile = process.argv[2];
+const outFile = (process.argv.length > 3) ? process.argv[3] : null;
+
+fs.readFileAsync(inputFile, 'utf8')
+    .then(function (contents) {
+        out.log(inputFile, 'loaded');
+
         // Convert the file contents from XML to JSON
         return parseString(contents);
     })
-    .then(function(compendium) {
+    .then(function (compendium) {
         // Get the compendium
         if (!('compendium' in compendium)) {
             throw 'Invalid compendium';
         }
         compendium = compendium.compendium;
-        // console.log('Processing compendium. Version:', compendium['$'].version);
+        out.log('Processing compendium. Version:', compendium['$'].version);
 
         // Find the spells and monsters in the compendium
-        let monsters = [],
-            spells = [];
+        let creatures = [],
+            spells = [],
+            output = {};
 
         if ('monster' in compendium) {
             // Process monsters
-            compendium.monster.forEach(function(monster) {
-                monsters.push(processMonster(monster));
+            compendium.monster.forEach(function (monster) {
+                creatures.push(processMonster(monster));
             });
+            output.creatures = creatures;
         }
         if ('spell' in compendium) {
             // Process spells
             // TODO
+            output.spells = spells;
         }
 
-        console.log(JSON.stringify(monsters));
+        if (outFile) {
+            // Append to the existing file
+            return appendToCompendium(outFile, output);
+        } else {
+            // Just output to stdout as JSON
+            console.log(JSON.stringify(output));
+        }
     })
-    .catch(function(err) {
-        console.log('Error:', err);
+    .catch(function (err) {
+        if (typeof err === 'object' && 'code' in err && err.code === 'ENOENT') {
+            out.error(inputFile + ' not found');
+        } else {
+            out.error('Error:', err);
+        }
     });
 
 function processTraits(value) {
@@ -175,4 +197,26 @@ function processMonster(monster) {
         }
     }
     return m;
+}
+
+function appendToCompendium(file, compendium) {
+    return fs.readFileAsync(file, 'utf8')
+        .then(function (contents) {
+            const existing = JSON.parse(contents);
+
+            for (let i in compendium) {
+                if (compendium.hasOwnProperty(i)) {
+                    if (i in existing) {
+                        existing[i] = existing[i].concat(compendium[i]);
+                    } else {
+                        existing[i] = compendium[i]
+                    }
+                }
+            }
+
+            return fs.writeFileAsync(file, JSON.stringify(existing), 'utf8');
+        })
+        .then(function () {
+            out.log(file, 'updated');
+        });
 }
