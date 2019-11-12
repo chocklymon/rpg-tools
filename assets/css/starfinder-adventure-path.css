@@ -112,7 +112,6 @@ p+p, .descriptive+p, .statblock+p, .sidebar+p, table+p {
 /* Possible statblock flags: .creature .trap .starship .statblock-full */
 .statblock {
     padding-bottom: 20px;
-    max-width: 600px;
 }
 .statblock-full {
     max-width: 100%;
@@ -134,11 +133,14 @@ p+p, .descriptive+p, .statblock+p, .sidebar+p, table+p {
     margin: 0 0 0 15px;
     text-indent: -15px;
 }
-.statblock .description p {
+.statblock .description {
+    margin-top: 10px;
+}
+.statblock .description p, .statblock .rule-help p {
     margin: 0;
     text-indent: 0;
 }
-.statblock .description p+p {
+.statblock .description p+p, .statblock .rule-help p+p {
     text-indent: 15px;
 }
 

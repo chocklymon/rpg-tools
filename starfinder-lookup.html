@@ -257,7 +257,7 @@
                 if (statblock && '_type' in statblock) {
                     // Build the basic header
                     html =
-                        '<div class="statblock ' + statblock._type + '">' +
+                        '<div class="statblock row ' + statblock._type + '"><div class="col-xs-12 col-md-8 col-lg-4">' +
                             '<div class="name">' +
                                 '<h2>' + statblock.name + tagIf('cr', 'span', 'CR ') + '</h2>' +
                             '</div>' +
@@ -267,6 +267,9 @@
 
                     // Build the statblock for the given type
                     if (statblock._type === 'creature') {
+                        var hasGrab = false,
+                            lower;
+
                         // Add the basic information (alignment, initiative, etc)
                         html += '<p>';
                         if (statblock.alignment) {
@@ -307,6 +310,9 @@
                         angular.forEach(statblock.attacks, function(attack) {
                             if (!offense[attack.type]) {
                                 offense[attack.type] = [];
+                            }
+                            if (!hasGrab && attack.damage.toLowerCase().indexOf('grab') >= 0) {
+                                hasGrab = true;
                             }
                             offense[attack.type].push(attack.name + ' ' + attack.bonus + ' (' + attack.damage + ')');
                         });
@@ -385,6 +391,51 @@
                             }
                             html += '</p></div>';
                         }
+
+                        html += '</div>';
+                        if ('role' in statblock) {
+                            html += '<div class="col-xs-1">' +
+                                '<img class="role img-responsive" alt="' + statblock.role + '" title="' + statblock.role + '" src="assets/images/starfinder/' + statblock.role + '_symbol.png"/>' +
+                                '</div>';
+                        }
+
+                        // Add helpers for special abilities and traits
+                        html += '<div class="rule-help col-xs-12 col-md-4">';
+                        if ('defensiveAbilities' in statblock) {
+                            lower = statblock.defensiveAbilities.toLowerCase();
+                            if (lower.indexOf('evasion') >= 0) {
+                                html += '<h4>Evasion (Ex)</h4>' +
+                                    '<p>If the creature succeeds at a Reflex save against an effect that normally has a partial effect on a successful save, it instead suffers no effect. This ability is lost if the creature is helpless or otherwise unable to move.</p>'
+                            }
+                            if (lower.indexOf('fast healing') >= 0) {
+                                html += '<h4>Fast Healing (Ex)</h4>' +
+                                    '<p>The creature regains the listed number of Hit Points at the start of its turn. Unless otherwise noted, the creature can never exceed its maximum Hit Points.</p>' +
+                                    '<p>Fast healing does not restore Hit Points lost from starvation, thirst, or suffocation, nor does it allow a creature to regrow or reattach lost body parts, unless otherwise stated. Fast healing continues to function until a creature dies, at which point the effects of fast healing end immediately.</p>'
+                            }
+                        }
+                        if ('offensiveAbilities' in statblock && statblock.offensiveAbilities.toLowerCase().indexOf('gaze') >= 0) {
+                            html += '<h4>Gaze (Su)</h4>' +
+                                '<p>Opponents that look at a creature with a gaze ability are in danger of being charmed, being paralyzed, being turned to stone, or suffering another negative effect. Each opponent within the gaze’s listed range must attempt a saving throw (usually Fortitude or Will) at the beginning of its turn. On a successful save, the effect is negated. An opponent can give itself an advantage against this ability in one of two ways.</p>' +
+                                '<p><i>Looking Obliquely:</i> An opponent that avoids looking directly at the creature’s face (either by following the creature’s shadow or by tracking it in a reflective surface) or that looks at the creature through a camera or heads-up display gains a +4 circumstance bonus to the saving throw. However, the creature with the gaze ability gains concealment against that opponent.</p>' +
+                                '<p><i>Blocking Its Vision:</i> By completely blocking or covering its own visual sensors, an opponent doesn’t need to attempt a save against the gaze. However, the creature with the gaze ability gains total concealment against that opponent. Gaze abilities can affect ethereal opponents but not opponents without visual sensors. A creature is immune to the gaze abilities of others of its kind unless otherwise noted. Allies of a creature with a gaze ability can still be affected, but they are always considered to be looking obliquely at the creature.The creature can also veil its eyes, thus negating its gaze ability.</p>'
+                        }
+                        if (hasGrab) {
+                            html += '<h4>Grab (Ex)</h4>' +
+                                '<p>If the creature hits with the indicated attack (usually a claw or bite attack), it deals the normal damage. If the creature’s attack roll successfully hits the target’s KAC + 4, the creature also automatically grapples the foe as a free action. (If it hits the target’s KAC + 13, it instead pins the target.) The creature does not need to have a spare limb free to perform this grapple, as long as it can make the listed attack, and it can potentially grapple more than one target if it has more than one attack with the grab ability. The creature can maintain the grab either with another successful grab attack or by performing the grapple combat maneuver normally.'
+                        }
+                        if ('immunities' in statblock && statblock.immunities.toLowerCase().indexOf('undead immunities') >= 0) {
+                            html += '<h4>Undead Immunities (Ex)</h4>' +
+                                '<p>Undead are immune to the following effects, unless the effect specifies it works against undead creatures.<ul>' +
+                                '<li>Bleed, death effects, disease, mind-affecting effects, paralysis, poison, sleep, and stunning.</li>' +
+                                '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
+                                '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>'
+                        }
+                        if ('abilities' in statblock && statblock.abilities.toLowerCase().indexOf('unliving') >= 0) {
+                            html += '<h4>Unliving (Ex)</h4>' +
+                                '<p>The creature has no Constitution score or modifier. Any DCs or other statistics that rely on a Constitution score treat the creature as having a score of 10 (+0). The creature is immediately destroyed when it reaches 0 Hit Points. An unliving creature doesn’t heal damage naturally, but a construct can be repaired with the right tools. Spells such as make whole can heal constructs, and magic effects can heal undead. An unliving creature with fast healing (see Alien Archive page 154) still benefits from that ability. Unliving creatures don’t breathe, eat, or sleep. They can’t be raised or resurrected, except through the use of miracle, wish, or a similar effect that specifically works on unliving creatures.</p>';
+                        }
+                        html += '</div>';
+
                         // TODO variant description block
                     } else if (statblock._type === 'trap') {
                         // Add trap stats
@@ -403,6 +454,10 @@
                     }
                     html += '</div>';
                 }
+
+                /*
+
+ */
 
                 return $sce.trustAsHtml(html);
             }
