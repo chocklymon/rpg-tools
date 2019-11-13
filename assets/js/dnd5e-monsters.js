@@ -482,6 +482,10 @@ if (!window) {
 
         // Global Functions
         function getMonsterName(name) {
+            if (!name) {
+                return null;
+            }
+
             name = name.trim().toLowerCase();
             if (name in monsters) {
                 // Exact match
@@ -611,7 +615,9 @@ if (!window) {
             getName: getMonsterName,
             getMonster: getMonster,
 
-            sizes: sizes
+            sizes: sizes,
+            alignments: alignments,
+            getModifier: getModifier,
         };
     }
 
