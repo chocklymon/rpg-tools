@@ -7,7 +7,7 @@ var fs = require("fs");
 var monsters = require("../assets/js/dnd5e-monsters");
 
 // List of files to convert
-var files = ["../source/PotA-ch2.html", "../source/PotA-ch3.html", "../source/PotA-ch4.html", "../source/PotA-ch5.html", "../source/PotA-ch6.html"];
+var files = ["../source/SofDQ.html"];
 
 // Initialize the bestiary
 var bestiary = JSON.parse(fs.readFileSync("../source/dnd-5e-creatures.json", "utf8"));
@@ -43,7 +43,7 @@ function processFile(file, data) {
                     + data.substring(result.index + result[0].length);
                 changed = true;
             } else {
-                console.error(file, result[2]);
+                console.error('Monster Not Found:', file, result[2]);
             }
         }
     }

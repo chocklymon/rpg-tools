@@ -107,6 +107,11 @@
     line-height         : 1.3em;
     list-style: disc outside;
 }
+.phb .no-dot {
+    list-style: none;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
 .phb p+p, .phb ul+p, .phb ol+p {
     text-indent : 1em;
 }
@@ -117,7 +122,7 @@
 .phb em {
     font-style : italic;
 }
-h1, h2, h3, h4{
+h1, h2, h3, h4, h5, h6 {
     margin-top    : 0.2em;
     margin-bottom : 0.2em;
     font-family   : MrJeeves, sans-serif;
@@ -126,8 +131,9 @@ h1, h2, h3, h4{
 }
 .phb h1 {
     font-size : 0.987cm;
+    clear: both;
 }
-.phb h1+p::first-letter {
+.phb h1+p::first-letter, .phb .zinger p::first-letter {
     float       : left;
     font-family : Solberry, serif;
     font-size   : 10em;
@@ -136,6 +142,7 @@ h1, h2, h3, h4{
 }
 .phb h2 {
     font-size : 0.705cm;
+    clear: both;
 }
 .phb h3 {
     font-size     : 0.529cm;
@@ -169,6 +176,34 @@ h1, h2, h3, h4{
 }
 .phb .descriptive-item {
     font-size: 0.95em;
+}
+
+.cover-page {
+    text-align: center;
+}
+.cover-page h1 {
+    font-size: 5em;
+}
+.cover-page h3 {
+    border-bottom: none;
+}
+.cover-page p {
+    padding-bottom: 1.2em;
+}
+.copyright {
+    font-size: 0.8em;
+}
+
+.zinger {
+    font-size: 1.2em;
+    font-style: italic;
+    clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.phb .zinger p::first-letter {
+    font-size: 9em;
+    font-style: normal;
 }
 
 .monster {
@@ -214,8 +249,7 @@ h1, h2, h3, h4{
 .monster hr+ul{
     color : #58180D;
 }
-.monster ul{
-.useSansSerif();
+.monster ul {
     padding-left : 1em;
     font-size    : 0.352cm;
 }
