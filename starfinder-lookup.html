@@ -296,7 +296,7 @@
                         // Add the Defense section
                         html += '<div><h5>Defense ' + tagIf('rp', 'span', '<strong style="padding-left:15px">RP</strong> ') + tagIf('hp', 'span', '<strong>HP</strong> ') + '</h5>' +
                                 safeLabel(['EAC', 'KAC']) +
-                                safeLabel(['Fort', 'Ref', 'Will'], null, true) +
+                                safeLabel(['Fort', 'Ref', 'Will', ''], ['fort', 'ref', 'will', 'save'], [true, true, true, false]) +
                                 safeLabel(['Defensive Abilities', 'DR', 'SR', 'Immunities', 'Resistances'], ['defensiveAbilities', 'dr', 'sr', 'immunities', 'resistances']) +
                                 safeLabel(['Weaknesses']) +
                             '</div>';
@@ -412,6 +412,10 @@
                                     '<p>The creature regains the listed number of Hit Points at the start of its turn. Unless otherwise noted, the creature can never exceed its maximum Hit Points.</p>' +
                                     '<p>Fast healing does not restore Hit Points lost from starvation, thirst, or suffocation, nor does it allow a creature to regrow or reattach lost body parts, unless otherwise stated. Fast healing continues to function until a creature dies, at which point the effects of fast healing end immediately.</p>'
                             }
+                            if (lower.indexOf('uncanny agility') >= 0) {
+                                html += '<h4>Uncanny Agility (Ex)</h4>' +
+                                    "<p>The creature is immune to the flat-footed condition, and its opponents don't gain any bonuses to attack rolls against it from flanking it or attacking it when it's prone. Furthermore, covering fire and harrying fire don't provide any advantage against it.</p>";
+                            }
                         }
                         if ('offensiveAbilities' in statblock && statblock.offensiveAbilities.toLowerCase().indexOf('gaze') >= 0) {
                             html += '<h4>Gaze (Su)</h4>' +
@@ -433,6 +437,17 @@
                         if ('abilities' in statblock && statblock.abilities.toLowerCase().indexOf('unliving') >= 0) {
                             html += '<h4>Unliving (Ex)</h4>' +
                                 '<p>The creature has no Constitution score or modifier. Any DCs or other statistics that rely on a Constitution score treat the creature as having a score of 10 (+0). The creature is immediately destroyed when it reaches 0 Hit Points. An unliving creature doesn’t heal damage naturally, but a construct can be repaired with the right tools. Spells such as make whole can heal constructs, and magic effects can heal undead. An unliving creature with fast healing (see Alien Archive page 154) still benefits from that ability. Unliving creatures don’t breathe, eat, or sleep. They can’t be raised or resurrected, except through the use of miracle, wish, or a similar effect that specifically works on unliving creatures.</p>';
+                        }
+                        if ('feat' in statblock && statblock.feat.toLowerCase().indexOf('cleave') >= 0) {
+                            html += '<h4>Cleave (Combat)</h4>' +
+                                '<p>You can strike two adjacent foes with a single swing.</p>' +
+                                '<p><strong>Benefit:</strong> As a standard action, you can make a single melee ' +
+                                'attack against a foe within reach. If you hit, you deal damage ' +
+                                'normally and can make an additional melee attack (using your ' +
+                                'full base attack bonus) against a foe that is adjacent to the ' +
+                                'first and also within reach. You can make only one additional ' +
+                                'attack per round with this feat. When you use this feat, you ' +
+                                'take a -2 penalty to your Armor Class until your next turn.</p>'
                         }
                         html += '</div>';
 
