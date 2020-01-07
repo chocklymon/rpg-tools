@@ -323,13 +323,15 @@
                         html += safeLabel(['Space', 'Reach'])
                               + safeLabel(['Offensive Abilities'], ['offensiveAbilities']);
                         // TODO handle spellBlocks and spellExtra
-                        if (statblock.spellClass || statblock.spellAbility) {
+                        if (statblock.spellClass || statblock.spellAbility || statblock.spells) {
                             // Add spells
                             html += '<p><strong>';
                             if (statblock.spellClass) {
                                 html += statblock.spellClass + ' spells known</strong>';
-                            } else {
+                            } else if (statblock.spellAbility) {
                                 html += statblock.spellAbility + ' Spell-Like Abilities</strong>';
+                            } else {
+                                html += 'Spell-Like Abilities</strong>'
                             }
                             if (statblock.spellCL) {
                                 html += ' (' + statblock.spellCL + ')';
@@ -427,12 +429,21 @@
                             html += '<h4>Grab (Ex)</h4>' +
                                 '<p>If the creature hits with the indicated attack (usually a claw or bite attack), it deals the normal damage. If the creature’s attack roll successfully hits the target’s KAC + 4, the creature also automatically grapples the foe as a free action. (If it hits the target’s KAC + 13, it instead pins the target.) The creature does not need to have a spare limb free to perform this grapple, as long as it can make the listed attack, and it can potentially grapple more than one target if it has more than one attack with the grab ability. The creature can maintain the grab either with another successful grab attack or by performing the grapple combat maneuver normally.'
                         }
-                        if ('immunities' in statblock && statblock.immunities.toLowerCase().indexOf('undead immunities') >= 0) {
-                            html += '<h4>Undead Immunities (Ex)</h4>' +
-                                '<p>Undead are immune to the following effects, unless the effect specifies it works against undead creatures.<ul>' +
-                                '<li>Bleed, death effects, disease, mind-affecting effects, paralysis, poison, sleep, and stunning.</li>' +
-                                '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
-                                '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>'
+                        if ('immunities' in statblock) {
+                            if (statblock.immunities.toLowerCase().indexOf('construct immunities') >= 0) {
+                                html += '<h4>Construct Immunities (Ex)</h4>' +
+                                    '<p>Constructs are immune to the following effects, unless the effect specifies that it works against constructs.<ul>' +
+                                    '<li>Bleed, death effects, disease, mind-affecting effects, necromancy effects, paralysis, poison, sleep, and stunning.</li>' +
+                                    '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
+                                    '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>';
+                            }
+                            if (statblock.immunities.toLowerCase().indexOf('undead immunities') >= 0) {
+                                html += '<h4>Undead Immunities (Ex)</h4>' +
+                                    '<p>Undead are immune to the following effects, unless the effect specifies it works against undead creatures.<ul>' +
+                                    '<li>Bleed, death effects, disease, mind-affecting effects, paralysis, poison, sleep, and stunning.</li>' +
+                                    '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
+                                    '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>'
+                            }
                         }
                         if ('abilities' in statblock && statblock.abilities.toLowerCase().indexOf('unliving') >= 0) {
                             html += '<h4>Unliving (Ex)</h4>' +

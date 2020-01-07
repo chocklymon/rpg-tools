@@ -142,6 +142,98 @@
       "frequency": "1/day",
       "effect": "",
       "cure": "2 consecutive saves"
+    },
+    {
+      "_type": "creature",
+      "_source": "",
+      "name": "CREATURE TEMPLATE",
+      "tag": "",
+      "cr": "1",
+      "role": "combatant",
+      "alignment": "N",
+      "size": "M",
+      "type": "humanoid",
+      "typeTag": "",
+      "init": 1,
+      "senses": "",
+      "perception": 1,
+      "aura": "",
+      "rp": 1,
+      "hp": 1,
+      "eac": 1,
+      "kac": 1,
+      "fort": 1,
+      "ref": 1,
+      "will": 1,
+      "save": "",
+      "defensiveAbilities": "",
+      "dr": "",
+      "sr": 1,
+      "immunities": "",
+      "resistances": "",
+      "weaknesses": "",
+      "speed": "30 ft.",
+      "attacks": [
+        {
+          "type": "melee",
+          "name": "",
+          "bonus": "",
+          "damage": "",
+          "roll": "|"
+        },
+        {
+          "type": "ranged",
+          "name": "",
+          "bonus": "",
+          "damage": "",
+          "roll": "|"
+        }
+      ],
+      "space": 10,
+      "reach": 15,
+      "offensiveAbilities": "",
+      "spellClass": "",
+      "spellAbility": "",
+      "spellCL": "",
+      "spells": [""],
+      "spellExtra": {
+        "name": "",
+        "text": ""
+      },
+      "spellBlocks": [
+        {
+          "spellClass": "Provides any number of additional spell* items to the statblock",
+          "spellCL": "",
+          "spells": [""],
+          "spellExtra": {
+            "name": "",
+            "text": ""
+          }
+        }
+      ],
+      "str": 1,
+      "dex": 1,
+      "con": 1,
+      "int": 1,
+      "wis": 1,
+      "cha": 1,
+      "skills": {
+        "Athletics": 1
+      },
+      "feat": "",
+      "languages": [""],
+      "abilities": "",
+      "gear": [""],
+      "environment": "any",
+      "organization": ["solitary"],
+      "specialAbilities": [
+        {
+          "name": "",
+          "type": "ex",
+          "text": [""]
+        }
+      ],
+      "description": [""]
     }
   ]
 }
