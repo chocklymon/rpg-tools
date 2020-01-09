@@ -75,10 +75,15 @@
             var vm = this;
             var sfData = [];
             vm.size = {
+                'F': 'Fine',
+                'D': 'Diminutive',
+                'T': 'Tiny',
                 'S': 'Small',
                 'M': 'Medium',
                 'L': 'Large',
-                'H': 'Huge'
+                'H': 'Huge',
+                'G': 'Gargantuan',
+                'C': 'Colossal'
             };
 
             // Get the bestiary
@@ -268,7 +273,21 @@
                     // Build the statblock for the given type
                     if (statblock._type === 'creature') {
                         var hasGrab = false,
+                            hasSwarmAttack = false,
                             lower;
+
+                        var formatAttack = function(attack) {
+                            if (!hasGrab && attack.damage.toLowerCase().indexOf('grab') >= 0) {
+                                hasGrab = true;
+                            }
+                            var bonus = ' ';
+                            if (attack.bonus) {
+                                bonus += attack.bonus;
+                            } else if (!hasSwarmAttack && attack.name.toLowerCase().indexOf("swarm attack") >= 0) {
+                                hasSwarmAttack = true;
+                            }
+                            return attack.name + bonus + ' (' + attack.damage + ')';
+                        };
 
                         // Add the basic information (alignment, initiative, etc)
                         html += '<p>';
@@ -311,14 +330,23 @@
                             if (!offense[attack.type]) {
                                 offense[attack.type] = [];
                             }
-                            if (!hasGrab && attack.damage.toLowerCase().indexOf('grab') >= 0) {
-                                hasGrab = true;
-                            }
-                            offense[attack.type].push(attack.name + ' ' + attack.bonus + ' (' + attack.damage + ')');
+                            offense[attack.type].push(formatAttack(attack));
                         });
                         angular.forEach(offense, function(attacks, type) {
                             html += '<p><strong>' + properCase(type) + '</strong> ' + attacks.join(' or ') + '</p>';
                         });
+                        if ('multiAttack' in statblock && Array.isArray(statblock.multiAttack) && statblock.multiAttack.length > 0) {
+                            html += '<p><strong>Multiattack</strong> ';
+                            angular.forEach(statblock.multiAttack, function(attack, i) {
+                                html += formatAttack(attack);
+                                if (i < statblock.multiAttack.length - 1) {
+                                    // Multiattacks are joined with commas
+                                    html += ', ';
+                                }
+                            });
+                            html += '</p>';
+                        }
+                        html += safeLabel(['Special Attacks'], ['specialAttacks']);
 
                         html += safeLabel(['Space', 'Reach'])
                               + safeLabel(['Offensive Abilities'], ['offensiveAbilities']);
@@ -405,60 +433,112 @@
                         html += '<div class="rule-help col-xs-12 col-md-4">';
                         if ('defensiveAbilities' in statblock) {
                             lower = statblock.defensiveAbilities.toLowerCase();
+                            if (lower.indexOf('amorphous') >= 0) {
+                                html += '<h4>Amorphous (Ex)</h4>' +
+                                    '<p>The creature’s body is malleable and shapeless. It does not take double damage from critical hits, but it is affected by critical hit effects normally.</p>';
+                            }
                             if (lower.indexOf('evasion') >= 0) {
                                 html += '<h4>Evasion (Ex)</h4>' +
-                                    '<p>If the creature succeeds at a Reflex save against an effect that normally has a partial effect on a successful save, it instead suffers no effect. This ability is lost if the creature is helpless or otherwise unable to move.</p>'
+                                    '<p>If the creature succeeds at a Reflex save against an effect that normally has a partial effect on a successful save, it instead suffers no effect. This ability is lost if the creature is helpless or otherwise unable to move.</p>';
                             }
                             if (lower.indexOf('fast healing') >= 0) {
                                 html += '<h4>Fast Healing (Ex)</h4>' +
                                     '<p>The creature regains the listed number of Hit Points at the start of its turn. Unless otherwise noted, the creature can never exceed its maximum Hit Points.</p>' +
-                                    '<p>Fast healing does not restore Hit Points lost from starvation, thirst, or suffocation, nor does it allow a creature to regrow or reattach lost body parts, unless otherwise stated. Fast healing continues to function until a creature dies, at which point the effects of fast healing end immediately.</p>'
+                                    '<p>Fast healing does not restore Hit Points lost from starvation, thirst, or suffocation, nor does it allow a creature to regrow or reattach lost body parts, unless otherwise stated. Fast healing continues to function until a creature dies, at which point the effects of fast healing end immediately.</p>';
+                            }
+                            if (lower.indexOf('swarm defenses') >= 0) {
+                                html += '<h4>Swarm Defenses (Ex)</h4>' +
+                                    '<p>Swarms take damage from weapons differently depending on how the weapon targets them.</p>' +
+                                    '<p>A swarm is immune to attacks and effects that target a single creature (including single-target spells), with the exception of mind-affecting effects if the swarm has an Intelligence score and an ability similar to a formian’s hive mind.</p>' +
+                                    '<p>A swarm takes half again as much damage (+50%) from effects that affect all targets in an area, such as grenades, blast and explode weapons, and many evocation spells.</p>' +
+                                    '<p>A swarm takes normal damage from an attack or effect that affects multiple targets (including lines and fully automatic mode attacks). For the purpose of automatic fire, the swarm counts as five targets. For example, if an automatic attack is made using 12 rounds of ammunition, it can attack a maximum of six targets, so it can damage a swarm normally. However, if two other targets are closer to the attacker than the swarm, they must be attacked first, leaving only four attacks to target the swarm, so it takes no damage.</p>';
                             }
                             if (lower.indexOf('uncanny agility') >= 0) {
                                 html += '<h4>Uncanny Agility (Ex)</h4>' +
                                     "<p>The creature is immune to the flat-footed condition, and its opponents don't gain any bonuses to attack rolls against it from flanking it or attacking it when it's prone. Furthermore, covering fire and harrying fire don't provide any advantage against it.</p>";
+                            }
+                            if (lower.indexOf('unflankable') >= 0) {
+                                html += '<h4>Unflankable (Ex)</h4>' +
+                                    "<p>Flanking the creature does not grant any bonuses, and abilities that function only against a creature that is flanked do not function against it.</p>";
                             }
                         }
                         if ('offensiveAbilities' in statblock && statblock.offensiveAbilities.toLowerCase().indexOf('gaze') >= 0) {
                             html += '<h4>Gaze (Su)</h4>' +
                                 '<p>Opponents that look at a creature with a gaze ability are in danger of being charmed, being paralyzed, being turned to stone, or suffering another negative effect. Each opponent within the gaze’s listed range must attempt a saving throw (usually Fortitude or Will) at the beginning of its turn. On a successful save, the effect is negated. An opponent can give itself an advantage against this ability in one of two ways.</p>' +
                                 '<p><i>Looking Obliquely:</i> An opponent that avoids looking directly at the creature’s face (either by following the creature’s shadow or by tracking it in a reflective surface) or that looks at the creature through a camera or heads-up display gains a +4 circumstance bonus to the saving throw. However, the creature with the gaze ability gains concealment against that opponent.</p>' +
-                                '<p><i>Blocking Its Vision:</i> By completely blocking or covering its own visual sensors, an opponent doesn’t need to attempt a save against the gaze. However, the creature with the gaze ability gains total concealment against that opponent. Gaze abilities can affect ethereal opponents but not opponents without visual sensors. A creature is immune to the gaze abilities of others of its kind unless otherwise noted. Allies of a creature with a gaze ability can still be affected, but they are always considered to be looking obliquely at the creature.The creature can also veil its eyes, thus negating its gaze ability.</p>'
+                                '<p><i>Blocking Its Vision:</i> By completely blocking or covering its own visual sensors, an opponent doesn’t need to attempt a save against the gaze. However, the creature with the gaze ability gains total concealment against that opponent. Gaze abilities can affect ethereal opponents but not opponents without visual sensors. A creature is immune to the gaze abilities of others of its kind unless otherwise noted. Allies of a creature with a gaze ability can still be affected, but they are always considered to be looking obliquely at the creature.The creature can also veil its eyes, thus negating its gaze ability.</p>';
                         }
                         if (hasGrab) {
                             html += '<h4>Grab (Ex)</h4>' +
-                                '<p>If the creature hits with the indicated attack (usually a claw or bite attack), it deals the normal damage. If the creature’s attack roll successfully hits the target’s KAC + 4, the creature also automatically grapples the foe as a free action. (If it hits the target’s KAC + 13, it instead pins the target.) The creature does not need to have a spare limb free to perform this grapple, as long as it can make the listed attack, and it can potentially grapple more than one target if it has more than one attack with the grab ability. The creature can maintain the grab either with another successful grab attack or by performing the grapple combat maneuver normally.'
+                                '<p>If the creature hits with the indicated attack (usually a claw or bite attack), it deals the normal damage. If the creature’s attack roll successfully hits the target’s KAC + 4, the creature also automatically grapples the foe as a free action. (If it hits the target’s KAC + 13, it instead pins the target.) The creature does not need to have a spare limb free to perform this grapple, as long as it can make the listed attack, and it can potentially grapple more than one target if it has more than one attack with the grab ability. The creature can maintain the grab either with another successful grab attack or by performing the grapple combat maneuver normally.';
+                        }
+                        if (hasSwarmAttack) {
+                            html += '<h4>Swarm Attack (Ex)</h4>' +
+                                '<p>The creature automatically deals the listed damage to each creature whose space it occupies at the end of its turn, with no attack roll needed. Swarm attacks are not subject to a miss chance for concealment or cover.</p>';
                         }
                         if ('immunities' in statblock) {
-                            if (statblock.immunities.toLowerCase().indexOf('construct immunities') >= 0) {
+                            lower = statblock.immunities.toLowerCase();
+                            if (lower.indexOf('construct immunities') >= 0) {
                                 html += '<h4>Construct Immunities (Ex)</h4>' +
                                     '<p>Constructs are immune to the following effects, unless the effect specifies that it works against constructs.<ul>' +
                                     '<li>Bleed, death effects, disease, mind-affecting effects, necromancy effects, paralysis, poison, sleep, and stunning.</li>' +
                                     '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
                                     '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>';
                             }
-                            if (statblock.immunities.toLowerCase().indexOf('undead immunities') >= 0) {
+                            if (lower.indexOf('plant immunities') >= 0) {
+                                html += '<h4>Plant Immunities (Ex)</h4>' +
+                                    '<p>Plants are immune to the following effects, unless the effect specifies it works against plants.<ul>' +
+                                    '<li>Mind-affecting effects, paralysis, poison, polymorph, sleep, and stunning.</li></ul></p>';
+                            }
+                            if (lower.indexOf('swarm immunities') >= 0) {
+                                html += '<h4>Swarm Immunities (Ex)</h4>' +
+                                    '<p>Swarms are immune to the following effects, unless the effect specifies it works against swarms.<ul>' +
+                                    '<li>Bleeding, critical hits, flat-footed, off-target, pinned, prone, staggered, and stunned.</li>' +
+                                    '<li>Combat maneuvers—swarms can’t be affected by and can’t perform combat maneuvers, unless the swarm’s description says otherwise.</li>' +
+                                    '<li>Flanking—swarms are unflankable.</li>' +
+                                    '<li>Dying—a swarm reduced to 0 Hit Points breaks up and ceases to exist as a swarm, though individual members of it might survive.</li></ul></p>';
+                            }
+                            if (lower.indexOf('undead immunities') >= 0) {
                                 html += '<h4>Undead Immunities (Ex)</h4>' +
                                     '<p>Undead are immune to the following effects, unless the effect specifies it works against undead creatures.<ul>' +
                                     '<li>Bleed, death effects, disease, mind-affecting effects, paralysis, poison, sleep, and stunning.</li>' +
                                     '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
-                                    '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>'
+                                    '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>';
                             }
                         }
-                        if ('abilities' in statblock && statblock.abilities.toLowerCase().indexOf('unliving') >= 0) {
-                            html += '<h4>Unliving (Ex)</h4>' +
-                                '<p>The creature has no Constitution score or modifier. Any DCs or other statistics that rely on a Constitution score treat the creature as having a score of 10 (+0). The creature is immediately destroyed when it reaches 0 Hit Points. An unliving creature doesn’t heal damage naturally, but a construct can be repaired with the right tools. Spells such as make whole can heal constructs, and magic effects can heal undead. An unliving creature with fast healing (see Alien Archive page 154) still benefits from that ability. Unliving creatures don’t breathe, eat, or sleep. They can’t be raised or resurrected, except through the use of miracle, wish, or a similar effect that specifically works on unliving creatures.</p>';
+                        if ('abilities' in statblock) {
+                            lower = statblock.abilities.toLowerCase();
+                            if (lower.indexOf('mindless') >= 0) {
+                                html += '<h4>Mindless (Ex)</h4>' +
+                                    '<p>The creature has no Intelligence score or modifier and is immune to mind-affecting effects. Any DCs or other statistics that rely on an Intelligence score treat the creature as having a score of 10 (+0).</p>';
+                            }
+                            if (lower.indexOf('unliving') >= 0) {
+                                html += '<h4>Unliving (Ex)</h4>' +
+                                    '<p>The creature has no Constitution score or modifier. Any DCs or other statistics that rely on a Constitution score treat the creature as having a score of 10 (+0). The creature is immediately destroyed when it reaches 0 Hit Points. An unliving creature doesn’t heal damage naturally, but a construct can be repaired with the right tools. Spells such as make whole can heal constructs, and magic effects can heal undead. An unliving creature with fast healing (see Alien Archive page 154) still benefits from that ability. Unliving creatures don’t breathe, eat, or sleep. They can’t be raised or resurrected, except through the use of miracle, wish, or a similar effect that specifically works on unliving creatures.</p>';
+                            }
                         }
                         if ('feat' in statblock && statblock.feat.toLowerCase().indexOf('cleave') >= 0) {
                             html += '<h4>Cleave (Combat)</h4>' +
                                 '<p>You can strike two adjacent foes with a single swing.</p>' +
-                                '<p><strong>Benefit:</strong> As a standard action, you can make a single melee ' +
-                                'attack against a foe within reach. If you hit, you deal damage ' +
-                                'normally and can make an additional melee attack (using your ' +
-                                'full base attack bonus) against a foe that is adjacent to the ' +
-                                'first and also within reach. You can make only one additional ' +
-                                'attack per round with this feat. When you use this feat, you ' +
-                                'take a -2 penalty to your Armor Class until your next turn.</p>'
+                                '<p><strong>Benefit:</strong> As a standard action, you can make a single melee attack against a foe within reach. If you hit, you deal damage ' +
+                                'normally and can make an additional melee attack (using your full base attack bonus) against a foe that is adjacent to the ' +
+                                'first and also within reach. You can make only one additional attack per round with this feat. When you use this feat, you ' +
+                                'take a -2 penalty to your Armor Class until your next turn.</p>';
+                        }
+                        var contains = function(haystack, needle) {
+                            if (Array.isArray(haystack)) {
+                                for (var i = 0, l = haystack.length; i < l; i++) {
+                                    if (haystack[i].toLowerCase().indexOf(needle) >= 0) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            }
+                            return haystack.toLowerCase().indexOf(needle) >= 0;
+                        };
+                        if (('specialAttacks' in statblock && contains(statblock.specialAttacks, 'distraction')) || ('offensiveAbilities' in statblock && statblock.offensiveAbilities.toLowerCase().indexOf('distraction') >= 0)) {
+                            html += '<h4>Distraction (Ex)</h4>' +
+                                '<p>The creature can nauseate targets that it damages. A living creature that takes damage from a creature with the distraction ability is nauseated for 1 round; the target can negate the effect with a successful Fortitude save at the listed DC.</p>';
                         }
                         html += '</div>';
 
@@ -480,6 +560,17 @@
                     }
                     html += '</div>';
                 }
+
+                // map[area]map[key]hint
+                // var hints = {
+                //     'abilities': {
+                //         'mindless': {
+                //             title: 'Mindless',
+                //             type: 'ex',
+                //             text: 'The creature has no Intelligence score or modifier and is immune to mind-affecting effects. Any DCs or other statistics that rely on an Intelligence score treat the creature as having a score of 10 (+0).'
+                //         }
+                //     }
+                // };
 
                 /*
 

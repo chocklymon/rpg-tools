@@ -189,6 +189,16 @@
           "roll": "|"
         }
       ],
+      "multiAttack": [
+        {
+          "type": "melee",
+          "name": "",
+          "bonus": "",
+          "damage": "",
+          "roll": "|"
+        }
+      ],
+      "specialAttacks": [""],
       "space": 10,
       "reach": 15,
       "offensiveAbilities": "",
