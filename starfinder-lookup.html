@@ -462,11 +462,21 @@
                                     "<p>Flanking the creature does not grant any bonuses, and abilities that function only against a creature that is flanked do not function against it.</p>";
                             }
                         }
-                        if ('offensiveAbilities' in statblock && statblock.offensiveAbilities.toLowerCase().indexOf('gaze') >= 0) {
-                            html += '<h4>Gaze (Su)</h4>' +
-                                '<p>Opponents that look at a creature with a gaze ability are in danger of being charmed, being paralyzed, being turned to stone, or suffering another negative effect. Each opponent within the gaze’s listed range must attempt a saving throw (usually Fortitude or Will) at the beginning of its turn. On a successful save, the effect is negated. An opponent can give itself an advantage against this ability in one of two ways.</p>' +
-                                '<p><i>Looking Obliquely:</i> An opponent that avoids looking directly at the creature’s face (either by following the creature’s shadow or by tracking it in a reflective surface) or that looks at the creature through a camera or heads-up display gains a +4 circumstance bonus to the saving throw. However, the creature with the gaze ability gains concealment against that opponent.</p>' +
-                                '<p><i>Blocking Its Vision:</i> By completely blocking or covering its own visual sensors, an opponent doesn’t need to attempt a save against the gaze. However, the creature with the gaze ability gains total concealment against that opponent. Gaze abilities can affect ethereal opponents but not opponents without visual sensors. A creature is immune to the gaze abilities of others of its kind unless otherwise noted. Allies of a creature with a gaze ability can still be affected, but they are always considered to be looking obliquely at the creature.The creature can also veil its eyes, thus negating its gaze ability.</p>';
+                        if ('offensiveAbilities' in statblock) {
+                            lower = statblock.offensiveAbilities.toLowerCase();
+                            if (lower.indexOf('gaze') >= 0) {
+                                html += '<h4>Gaze (Su)</h4>' +
+                                    '<p>Opponents that look at a creature with a gaze ability are in danger of being charmed, being paralyzed, being turned to stone, or suffering another negative effect. Each opponent within the gaze’s listed range must attempt a saving throw (usually Fortitude or Will) at the beginning of its turn. On a successful save, the effect is negated. An opponent can give itself an advantage against this ability in one of two ways.</p>' +
+                                    '<p><i>Looking Obliquely:</i> An opponent that avoids looking directly at the creature’s face (either by following the creature’s shadow or by tracking it in a reflective surface) or that looks at the creature through a camera or heads-up display gains a +4 circumstance bonus to the saving throw. However, the creature with the gaze ability gains concealment against that opponent.</p>' +
+                                    '<p><i>Blocking Its Vision:</i> By completely blocking or covering its own visual sensors, an opponent doesn’t need to attempt a save against the gaze. However, the creature with the gaze ability gains total concealment against that opponent. Gaze abilities can affect ethereal opponents but not opponents without visual sensors. A creature is immune to the gaze abilities of others of its kind unless otherwise noted. Allies of a creature with a gaze ability can still be affected, but they are always considered to be looking obliquely at the creature.The creature can also veil its eyes, thus negating its gaze ability.</p>';
+                            }
+                            if (lower.indexOf('whirlwind') >= 0) {
+                                html += '<h4>Whirlwind (Ex)</h4>' +
+                                    "<p>The creature can transform into a whirlwind. Unless otherwise specified, the creature can remain in whirlwind form for a number of rounds equal to half its CR. If the creature has a fly speed, it retains that in its whirlwind form. If it does not have a fly speed, it gains an extraordinary fly speed (with average maneuverability) equal to its base speed. A creature in whirlwind form can move freely into and through other creatures’ spaces, and it does not provoke attacks of opportunity as a result of its movement.</p>" +
+                                    "<p>The base of a creature in whirlwind form occupies a 5-foot square, and the whirlwind is twice as wide at its top as its base and has a height equal to four times the width of its base; this doesn’t change the size category of the creature. If a creature is Large or larger, it can vary the size of its whirlwind form up to a maximum of a base equal to its normal space as a swift or move action. A creature in whirlwind form does not threaten any spaces around it, and it cannot make its normal attacks.</p>" +
+                                    "<p>If a creature in whirlwind form enters the space of another creature, that creature must succeed at a Fortitude save with the listed DC or take the whirlwind’s listed damage. If the whirlwind covers all of the creature’s space, the creature must also succeed at a Reflex save or be picked up by the whirlwind and carried along with it. A carried creature is flatfooted, grappled, and off-target, and it automatically takes the whirlwind’s damage at the beginning of its turn. If the carried creature can fly, it can attempt a Reflex save as a move action, escaping on a successful save. If a carried creature does not escape, it can attempt a Fortitude save; if it succeeds, it can take any remaining actions it has on its turn (other than movement). On a failed save, the carried creature is unable to act until its next turn or until the whirlwind releases it.</p>" +
+                                    "<p>A creature in whirlwind form can carry up to two creatures of its size, with the total number it can carry doubling for every size category the affected creatures are smaller than the whirlwind. The creature in whirlwind form can eject a carried creature at any time during its turn, dropping the carried creature in a space of its choice adjacent to its position at the time of ejection. At the GM’s discretion, if the whirlwind is in contact with dirt, gases, water, or other material that can be easily drawn into it, the whirlwind blocks all vision within it (including darkvision) and blocks line of sight through it.</p>";
+                            }
                         }
                         if (hasGrab) {
                             html += '<h4>Grab (Ex)</h4>' +
@@ -484,6 +494,12 @@
                                     '<li>Bleed, death effects, disease, mind-affecting effects, necromancy effects, paralysis, poison, sleep, and stunning.</li>' +
                                     '<li>Ability damage, ability drain, energy drain, exhaustion, fatigue, negative levels, and nonlethal damage.</li>' +
                                     '<li>Any effect that requires a Fortitude save (unless the effect works on objects or is harmless).</li></ul></p>';
+                            }
+                            if (lower.indexOf('elemental immunities') >= 0) {
+                                html += '<h4>Elemental Immunities (Ex)</h4>' +
+                                    '<p>Elementals are immune to the following effects, unless the effect specifies that it works against elemental creatures:<ul>' +
+                                    '<li>Bleed, critical hits, paralysis, poison, sleep effects, and stunning.</li>' +
+                                    '<li>Flanking—elementals are unflankable.</li></ul></p>';
                             }
                             if (lower.indexOf('plant immunities') >= 0) {
                                 html += '<h4>Plant Immunities (Ex)</h4>' +
@@ -508,6 +524,10 @@
                         }
                         if ('abilities' in statblock) {
                             lower = statblock.abilities.toLowerCase();
+                            if (lower.indexOf('earth glide') >= 0) {
+                                html += '<h4>Earth Glide (Ex)</h4>' +
+                                    '<p>When the creature burrows, it can pass through dirt, stone, or almost any other sort of earth except metal as easily as a fish swims through water. If protected against fire damage, it can even glide through lava. Its burrowing leaves behind no tunnel or hole, nor does it create any ripple or other sign of its presence.</p>';
+                            }
                             if (lower.indexOf('mindless') >= 0) {
                                 html += '<h4>Mindless (Ex)</h4>' +
                                     '<p>The creature has no Intelligence score or modifier and is immune to mind-affecting effects. Any DCs or other statistics that rely on an Intelligence score treat the creature as having a score of 10 (+0).</p>';
@@ -517,13 +537,30 @@
                                     '<p>The creature has no Constitution score or modifier. Any DCs or other statistics that rely on a Constitution score treat the creature as having a score of 10 (+0). The creature is immediately destroyed when it reaches 0 Hit Points. An unliving creature doesn’t heal damage naturally, but a construct can be repaired with the right tools. Spells such as make whole can heal constructs, and magic effects can heal undead. An unliving creature with fast healing (see Alien Archive page 154) still benefits from that ability. Unliving creatures don’t breathe, eat, or sleep. They can’t be raised or resurrected, except through the use of miracle, wish, or a similar effect that specifically works on unliving creatures.</p>';
                             }
                         }
-                        if ('feat' in statblock && statblock.feat.toLowerCase().indexOf('cleave') >= 0) {
-                            html += '<h4>Cleave (Combat)</h4>' +
-                                '<p>You can strike two adjacent foes with a single swing.</p>' +
-                                '<p><strong>Benefit:</strong> As a standard action, you can make a single melee attack against a foe within reach. If you hit, you deal damage ' +
-                                'normally and can make an additional melee attack (using your full base attack bonus) against a foe that is adjacent to the ' +
-                                'first and also within reach. You can make only one additional attack per round with this feat. When you use this feat, you ' +
-                                'take a -2 penalty to your Armor Class until your next turn.</p>';
+                        if ('feat' in statblock) {
+                            lower = statblock.feat.toLowerCase();
+                            if (lower.indexOf('cleave') >= 0) {
+                                html += '<h4>Cleave (Combat)</h4>' +
+                                    '<p>You can strike two adjacent foes with a single swing.</p>' +
+                                    '<p><strong>Benefit:</strong> As a standard action, you can make a single melee attack against a foe within reach. If you hit, you deal damage ' +
+                                    'normally and can make an additional melee attack (using your full base attack bonus) against a foe that is adjacent to the ' +
+                                    'first and also within reach. You can make only one additional attack per round with this feat. When you use this feat, you ' +
+                                    'take a -2 penalty to your Armor Class until your next turn.</p>';
+                            }
+                            if (lower.indexOf('mobility') >= 0) {
+                                html += '<h4>Mobility (Combat)</h4>' +
+                                    '<p>You can easily move past dangerous foes.</p>' +
+                                    '<p><strong>Benefit:</strong> You gain a +4 bonus to your Armor Class against attacks of opportunity that you provoke by leaving a threatened square.</p>';
+                            }
+                            if (lower.indexOf("spring attack") >= 0) {
+                                html += '<h4>Spring Attack (Combat)</h4>' +
+                                    '<p>You can deftly move up to a foe, strike, and withdraw before it can react.</p>' +
+                                    '<p><strong>Benefit:</strong> As a full action, you can move up to your speed and make a single melee attack or combat maneuver without provoking any ' +
+                                    'attacks of opportunity from the target of your attack. You can move both before and after the attack, but you must move at least 10 feet before the attack, ' +
+                                    'and the total distance that you move cannot be greater than your speed. You cannot use this ability to attack a foe that is adjacent to you at the start of your turn. ' +
+                                    'If you have the trick attack class feature, you can take your movement from trick attack at any time during a trick attack with a melee weapon (instead of only before), ' +
+                                    'without provoking any attacks of opportunity from the target of your attack.</p>';
+                            }
                         }
                         var contains = function(haystack, needle) {
                             if (Array.isArray(haystack)) {
