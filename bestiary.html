@@ -169,6 +169,16 @@
                 selectMonster(vm.monsters.length > 0 ? vm.monsters[0] : null);
             };
             vm.selectMonster = selectMonster;
+
+            vm.doAFilter = function() {
+                var r = [];
+                angular.forEach(bestiary.monsters, function(m) {
+                    if (m.type === vm.afilter) {
+                        r.push(m.name);
+                    }
+                });
+                vm.aresult = r;
+            };
         }])
         .controller('statblock', ['$http', '$routeParams', '$sce', 'bestiary', function($http, $routeParams, $sce, bestiary) {
             var vm = this;
@@ -328,6 +338,13 @@
                         </div>
                     </div>
                     <pre ng-show="vm.showJSON">{{vm.monster.json | json}}</pre>
+                </div>
+            </div>
+            <div class="form-group">
+                <h4>Advanced</h4>
+                <input type="text" ng-model="vm.afilter" ng-change="vm.doAFilter()"/>
+                <div>
+                    <button type="button" class="btn btn-default" ng-repeat="r in vm.aresult" ng-click="vm.selectMonster(r)">{{r}}</button>
                 </div>
             </div>
         </form>
